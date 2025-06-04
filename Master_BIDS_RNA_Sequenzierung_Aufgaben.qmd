@@ -1,0 +1,653 @@
+---
+title: "RNA-Sequenzierungs-Analyse - Aufgaben"
+author: "Patrick Metzger - Institut für Medizinische Bioinformatik und Systemmedizin"
+format:
+  html:
+    toc: true
+    number-sections: true
+    df-print: paged
+    code-fold: true
+    embed-resources: true
+execute:
+  cache: true
+  echo: true
+  warning: false
+  error: false
+---
+
+# Einführung
+
+Wir bitten euch hier, die grundlegenden Schritte einer RNA-Sequenzierungs-Analyse durchzuführen. Wir stellen euch bereits die auf das menschliche Referenzgenom ausgerichteten Reads zur Verfügung, d.h. euer Ausgangspunkt sind die "Raw Counts" für alle Gene jeder Probe. Zusammen mit den Counts stellen wir euch die Annotationstabelle zur Verfügung, die die Proben-IDs mit den tatsächlichen biologischen Bedingungen verknüpft. Der Datensatz stammt aus einem wissenschaftlichen Projekt, an dem wir hier in Freiburg arbeiten. Der Datensatz enthält Expressionsdaten eines Rektumadenokarzinoms, welches Varianten in ***BRAF^D594G^***, ***KRAS^G12A^*** und ***TP53^R175H^*** trägt. Mit dem RNA-Seq-Experiment soll untersucht werden, welchen Einfluss die Medikamente **Sorafenib** und **Trametinib** auf das Expressionsmuster der Tumorzellen haben. Um die Vergleiche vornehme zu können wurde ebenfalls eine Kontrollprobe mit **Dimethylsulfoxid** (DMSO) generiert. DMSO wurde gewählt, da die Medikamente darin gelöst sind, um sie den Zellen zuverabreichen. Wir betrachten im folgenden also die biologischen Bedingungen **DMSO**, **Sorafenib** (Sora) und **Trametinib** (Tram). Für alle Bedingungen liegen zwei biologische Replikate vor.
+
+Das Ziel dieser Aufgabe ist es die signifikant veränderten Gene zwischen der Kontrolle (DMSO) und den beiden Behandlungen (Sora und Tram) zu finden. Des weiteren interssiert uns auch, ob es Unterschiede zwischen den Behandlungen gibt. Dabei hilft uns in beiden Fällen die Analyse der differentiell exprimierten Gene (DEG).
+
+Im folgenden beschreiben wir die Aufgaben und geben euch weitere Hinweise und Erklärungen.
+
+Wir werden in den nächsten Wochen schrittweise folgende Punkte bearbeiten:
+
+1.  Importieren der Count Daten und erstellen einer Count Matrix
+2.  Verknüpfung der Daten zu tatsächlichen biologischen Bedingungen
+3.  Erstellen einer Tabelle, die alle Gene und ihre zugehörigen Gen-Identifikatoren enthält.
+4.  Berechnung einer Hauptkomponentenanalyse (PCA), um einen ersten Überblick über den Datensatz zu erhalten
+5.  Die DEG-Analyse
+6.  Vergleich zwischen den Medikamenten
+7.  Gene-Set Enrichment Analyse (GSEA)
+8.  Visualisieren und Exportieren der Ergebnisse
+
+Daraus resultieren folgende Aufgaben/ Fragen für euch. Wir haben diese auf die drei verbleibenden Wochen aufgeteilt. Weitere Details findet ihr fortlaufend in diesem Dokument.
+
+**Aufgaben/ Fragen Woche 4**
+
+Vorbereitung:
+
+1.  Importiert die Count-Daten und erstellt daraus eine Count-Matrix
+2.  Erstellt eine Tabelle, die alle gemessenen Gene und all ihre verschiedenen IDs enthält.
+3.  Ordnet den Proben ihre biologische Bedingung zu
+4.  Erstellt das DESeq2 Objekt und normalisiert die Daten
+5.  Erstellt zwei QC Abbildungen, einmal mit den Roh-Counts und einmal mit den normalisierten Count-Werten.
+
+**Aufgaben/ Fragen Woche 5**
+
+DEG-Analyse:
+
+1.  Berechnet eine Principal Component Analysis (PCA) und stellt diese grafisch dar.
+2.  Baut auf dem DESeq2 Objekt auf und führt die *"Differentially Expressed Genes"* (DEG) Analyse durch.
+    i)  Bestimmt die DEGs für die beiden Vergleiche Sorafenib vs DMSO und Trametinib vs DMSO
+    ii) Wie viele DEGs konntet ihr pro Vergleich identifizieren? (Cutoff padj \< 0.05)
+    iii) Wie verteilen sich die Anzahl der DEGs auf hoch- bzw. runter-reguliert? (log2FoldChange \> bzw. \< 0)
+    iv) Stellt die Anzahlen grafisch z.B. als Barplot dar.
+3.  Baut die signifikanten DEGs als Übersichtstabellen ins HTML ein.
+4.  Stellt die Ergebnisse der DEG-Analyse mit Hilfe eines *Volcano Plots* dar.
+
+**Aufgabe/ Fragen Woche 6**
+
+Vergleich der beiden Medikamente:
+
+1.  Findet Gemeinsamkeiten und Unterschiede zwischen den beiden Medikamenten im Vergleich zu DMSO.
+2.  Wendet einen Exakten Test nach Fischer an um aus den Genen veränderte Gensets/ Signalwege abzuleiten. Diese Art der Analyse nennt man *funktionelle Analyse* oder auch *"Gene-Set Enrichment Analysis (GSEA)"*.
+3.  Stellt die Ergebnisse grafisch dar.
+
+## R Pakete
+
+Verwendete R Paket:
+
+```{r}
+#| collapse: false
+
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install(version = "3.21")
+
+library(DESeq2)
+library(openxlsx)
+library(pheatmap)
+library(org.Hs.eg.db)
+library(ggplot2)
+library(FactoMineR)
+library(ggrepel)
+library(apeglm)
+library(ggrepel)
+library(viridis)
+library(tidyverse)
+library(kableExtra)
+library(pheatmap)
+library(genefilter)
+library(EnhancedVolcano)
+library(UpSetR)
+library(msigdbr)
+library(doMC) # falls es hiermit Probleme gibt könnt ihr das Paket auch weglassen
+library(foreach) # falls es hiermit Probleme gibt könnt ihr das Paket auch weglassen
+library(BiocParallel) # falls es hiermit Probleme gibt könnt ihr das Paket auch weglassen
+# optional -> increase speed of analysis due to multicore processing
+register(MulticoreParam(4)) # -> diese Zeile löschen, wenn es Probleme mit den Paketen doMC, foreach und/ oder BiocParallel gab
+```
+
+Hinweis: Falls diese nicht installiert sind, können sie mit dem Paketmanager von [bioconductor](https://www.bioconductor.org/install/) `BiocManager::install()` oder `install.packages()` installiert werden.
+
+```{r}
+#| eval: false
+packages <- c(
+  "doMC",
+  "foreach",
+  "BiocParallel",
+  "UpSetR",
+  "genefilter",
+  "DESeq2",
+  "openxlsx",
+  "pheatmap",
+  "org.Hs.eg.db",
+  "ggplot2",
+  "FactoMineR",
+  "ggrepel",
+  "apeglm",
+  "viridis",
+  "tidyverse",
+  "kableExtra",
+  "pheatmap",
+  "EnhancedVolcano",
+  "msigdbr"
+)
+BiocManager::install(packages)
+```
+
+## Konfiguration
+
+```{r}
+#| warning: false
+#| 
+## general config
+mainDir <- "/Users/chris/Library/CloudStorage/GoogleDrive-christoph.kovacs@gmail.com/My Drive/BIDS Bioinformatik & Systembiologie 2025/KW4 Lernaufgabe/MIRACUM_BIDS_Bioinformatik_Systembiologie_RNA_Sequenzierung_Aufgabe"
+analysisDir <- file.path(mainDir, "analysis")
+degDIR <- file.path(analysisDir, "DEG")
+gseaDIR <- file.path(analysisDir, "GSEA")
+gageDIR <- file.path(analysisDir, "GSEA", "GAGE")
+dir.create(degDIR, recursive = T)
+dir.create(gageDIR, recursive = T)
+```
+
+**Setzen des Arbeitsverzeichnisses:** Die Funktion `setwd()` setz das Arbeitsverzeichnis und `getwd()` liest das aktuelle Arbeitsverzeichnis aus.
+
+```{r}
+setwd(mainDir)
+getwd()
+```
+
+Bei nicht UNIX basierten Betriebssystemen, z.B. Microsoft Windows, müsst ihr aufpassen, da dort der Backslash als Trenner verwendet wird. Ihr könnte aber, wenn ihr nicht sicher sein, auch die Funktion `file.path(..., fsep = .Platform\$file.sep)` vewenden, z.B.
+
+```{r}
+#| warning: false
+#| eval: false
+file.path(
+  "~",
+  "Documents",
+  "Lehre",
+  "BIDS",
+  "Bioinformatik und Systembiologie",
+  "2024",
+  "BIDS_RNA_Seq_2024",
+  "MIRACUM_BIDS_Bioinformatik_Systembiologie_RNA_Sequenzierung_Aufgabe_2024"
+)
+```
+
+
+## Funktionen
+
+Wir stellen euch ein paar Funktionen zur Verfügung, die euch bei der Konvertierung der verschiedenen Gen-IDs unterstützen können. Alle Konvertierungen sind in der Hauptfunktion `getGeneMat()` zusammengefasst. Diese nimmt als Input die ENSEMBL Gen-IDs und konvertiert diese in die anderen und fasst alles zu einem *"data.frame"* zusammen.
+
+```{r}
+ensembl2entrez <- function(ensembl) {
+  entrez <- mget(as.character(ensembl), org.Hs.egENSEMBL2EG, ifnotfound = NA)
+  entrez <- lapply(entrez, function(i) return(i[1]))
+  return(unlist(entrez))
+}
+
+entrez2ensembl <- function(entrez) {
+  esbl <- mget(as.character(entrez), org.Hs.egENSEMBL, ifnotfound = NA)
+  esbl <- lapply(esbl, function(i) return(i[1]))
+  return(unlist(esbl))
+}
+
+entrez2symbol <- function(entrez) {
+  symbol <- mget(as.character(entrez), org.Hs.egSYMBOL, ifnotfound = NA)
+  symbol <- unlist(lapply(symbol, function(i) return(i[1])))
+  return(symbol)
+}
+
+entrez2genename <- function(entrez) {
+  symbol <- mget(as.character(entrez), org.Hs.egGENENAME, ifnotfound = NA)
+  symbol <- unlist(lapply(symbol, function(i) return(i[1])))
+  return(symbol)
+}
+
+getGeneMat <- function(ensIDs) {
+  geneMat <- data.frame(ENSEMBL=ensIDs)
+  geneMat$ENTREZ <- ensembl2entrez(geneMat$ENSEMBL)
+  idxNA <- !is.na(geneMat$ENTREZ)
+  sym <- entrez2symbol(na.omit(geneMat$ENTREZ))
+  genename <- entrez2genename(na.omit(geneMat$ENTREZ))
+  geneMat$Symbol <- NA
+  geneMat$Symbol[idxNA] <- sym
+  geneMat$Genename <- NA
+  geneMat$Genename[idxNA] <- genename
+  rownames(geneMat) <- geneMat$ENSEMBL
+  return(geneMat)
+}
+```
+
+# Analyse
+
+## Vorbereitung
+
+### Importieren der Rohdaten aus dem Alignment und der Quantifizierung
+
+Das ausrichten der Sequenzierungsschnipsel (Alignment der Reads) wurde mit dem Progamm **STAR** gemacht. STAR bietet außerdem die Möglichkeit auch gleich die Qunatifizierung der Expression vorzunemhen. Dabei wurde der Parameter `--quantMode GeneCount` verwendet. Hierzu wurde eine sogenannte GTF/ GFF Annotationsdatei benutzt, welche die Information beinhaltet, welches Gene zu welchen chromosomalen Koordinaten gehört. Wir betrachten hier ein *un-stranded*-RNA-Sequenzierungs Experiment.
+
+Die einzelnen *.tab* Dateien beinhalten die Counts pro Gene. Dabei gibt die 1. Spalte den ENSEMBL Gen-Identifier an, z.B. *ENSG00000223972* und die 2. Spalte die entsprechenden un-stranded RNA-Seq Counts. Diese beiden Spalten brauchen wir im Folgenden. Die ersten vier Reihen geben ein paar Zusammenfassungsstatistiken über die Count Datei und werden nicht benötigt.
+
+**Erstellt die Count Matrix und die Genreferenztabelle mit allen Genen und den zugehörigen IDs. Stellt die Count-Matrix, die betrachteten Gene und die Annotation der Proben zu den biologischen Bedingungen innerhalb des HTML Dokuments dar.**
+
+```{r}
+library(readxl)
+
+getwd()
+
+# Annotation einlesen
+annotation <- 
+  read_excel("targets.xlsx") %>%
+  mutate(group = as.factor(group)) %>%
+  column_to_rownames("label") %>%
+  mutate(label = rownames(.))
+annotation
+
+read_counts <- function(file) {
+  read_tsv(file, skip = 4, col_names = c("GeneID", "Count1", "Count2", "Count3"), show_col_types = FALSE) %>%
+    select(GeneID, Count1)
+}
+
+# Eine Liste mit Count-Daten je Datei
+count_list <- map(annotation$file, read_counts)
+
+# Count-Matrix erstellen
+count_matrix <- reduce(count_list, full_join, by = "GeneID") %>%
+  setNames(c("GeneID", annotation$label)) %>%
+  column_to_rownames("GeneID")
+count_matrix
+
+# Matrix speichern
+write.table(
+  x = count_matrix,
+  file = file.path(analysisDir, "counts.txt"),
+  sep = "\t",
+  quote = FALSE
+)
+
+# Gene (ENSEMBL-IDs) als Referenz extrahieren
+gene_reference <- getGeneMat(rownames(count_matrix))
+gene_reference
+```
+
+### Vorbereiten des DESeq2 Objektes
+
+Im nächsten Abschnitt wird das DESeq2-Modell erstellt. Damit wird die Grundlage für die spätere Analyse der differentiell exprimierten Gene (DEG) gelegt. Hierbei ist das Handbuch von [DESeq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) sehr hilfreich. Wir importieren die Daten auf Grundlage der erstellten Count-Matrix, analog zu [Count-Matrix-Import](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-matrix-input). Nach dem Import und dem Erstellen des DESeq2 Objektes müssen wir die Rohdaten einem [Vorfilter](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#pre-filtering) Schritt unterziehen um sehr niedrige Counts zu entfernen. Hierbei is es hilfreich sich zu überlegen, wie viele biologische Replikate wir pro Bedingung haben. Idealerweise entfernt man alle Gene, die im vorliegenden Experiment in Summer über alle Bedingungen weniger als 5-10 Counts haben.
+
+**Wie viele Gene verlieren wir aufgrund von niedriger Expression?**
+
+```{r}
+# Erstellen des DESeq2-Objekts
+dds <- DESeqDataSetFromMatrix(
+  countData = count_matrix,
+  colData   = annotation,
+  design    = ~ group
+)
+
+# Vorfilter
+minCounts <- 5
+keep <- rowSums(counts(dds)) >= minCounts
+sum(keep) # keeping 23,938 records
+sum(dim(count_matrix)[1]-sum(keep)) # discarding 33'835 records
+dds <- dds[keep,] 
+```
+
+### Normalisierung und Differentielle Expression
+
+Nachdem wir die schwach exprimierten Gene entfernt haben können wir die Normalisierung der Daten vornehmen. Dazu müssen wir die *"size factors"* und die *"Dispersion"* bestimmen, damit wir den tatsächlichen Signifikanztest (wir wollen den Wald- Test verwenden) anwenden können. Außerdem müssen wir die normalisierten Expressionswerte extrahieren, damit wir damit z.B. eine PCA erstellen können. Dazu verwenden wir die [*regularized logarithm* (rlog) Transformation](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#regularized-log-transformation). Die Werte können dann mit der Funktion `assay()` extrahiert werden.
+
+```{r}
+# Schätze size factors
+dds <- estimateSizeFactors(dds)
+sizeFactors(dds)
+
+# Schätze Dispersion
+dds <- estimateDispersions(dds)
+plotDispEsts(dds)
+
+# Führe Wald Test durch
+dds <- nbinomWaldTest(dds)
+plotMA(dds)
+
+# rlog-Transformation, behalte Gruppeninformation
+rld <- rlog(dds, blind = FALSE)
+rlog_matrix <- assay(rld)
+head(rlog_matrix)
+```
+
+### QC Plot vor und nach der Normalisierung
+
+Zur besseren Interpretation und dem Verständnis der Normalisierung bietet es sich an die Count-Werte der einzelnen Gene als kombinierten Boxplot für die jeweiligen Bedingungen darzustellen; jeweils vor und nach der Normalisierung. Die Konvertierung der Count-Werte in `log2(count + 1)` hat sich in dieser Hinsicht bewährt.
+
+**Erstellt bitte einen Boxplot mit den log-transformierten Counts vor und einen Boxplot nach der Normalisierung.**
+
+Hinweis: Normalisierte Counts erhaltet ihr nach anwenden der `DESeq()` Funktion und der Extraktion der Werte mit `counts(ddsObject, normalized = TRUE)`. Generell empfielt sich **ggplot2** zum Zeichnen zu verweden, da es vielfälltige Möglichkeiten bietet und dadurch sehr ansehnliche Abbildungen erstellen kann. Um ein für ggplot2 passendes `data.frame` zu erstellen, können Pakete wie z.B. reshape2, dplyr, etc. hilfreich sein.
+
+```{r}
+## Roh-Counts extrahieren
+raw_counts <- counts(dds)
+
+# Log2 transformieren
+log_raw <- log2(raw_counts + 1)
+
+# Daten für ggplot umformen
+df_raw <- as.data.frame(log_raw) %>%
+  rownames_to_column("gene") %>%
+  pivot_longer(-gene, names_to = "sample", values_to = "log2count") %>%
+left_join(as.data.frame(colData(dds)) %>%
+rownames_to_column("sample"), by = "sample")
+
+# Boxplot erstellen
+df_raw %>%
+  ggplot(aes(x = sample, y = log2count, fill = group)) +   # why not group?
+  geom_boxplot(outlier.size = 0.3) +
+  theme_bw() +
+  labs(title = "Counts (trans) pro Bedingung",
+       x = "Bedingung", y = "Counts (trans)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+## Normalisierte Counts extrahieren
+norm_counts <- counts(dds, normalized = TRUE)
+
+# Log2 transformieren
+log_norm <- log2(norm_counts + 1)
+
+# Daten für ggplot umformen
+df_norm <- as.data.frame(log_norm) %>%
+  rownames_to_column("gene") %>%
+  pivot_longer(-gene, names_to = "sample", values_to = "log2normCount") %>%
+left_join(as.data.frame(colData(dds)) %>%
+rownames_to_column("sample"), by = "sample")
+
+# Boxplot erstellen
+df_norm %>% 
+  ggplot(aes(x = sample, y = log2normCount, fill = group)) +
+  geom_boxplot(outlier.size = 0.3) +
+  theme_bw() +
+  labs(title = "Counts (norm, trans) pro Bedingung",
+       x = "Bedingung", y = "Counts (norm, trans)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## PCA - Principal Component Analysis
+
+Bevor wir mit der tatsächlichen DEG-Analyse fortfahren berechnen wir eine PCA um einen ersten Eindruck von unseren Daten zu bekommen. Dazu verwenden wir die eben erstellten, normalisierten Expressionswerte (rlog-Werte). In der PCA sollen die Bedingungen als *"individuals"* betrachtet und die Gene als *"variables"*. Im Resultat soll jede Probe dargestellt und in seine Haupkomponenten zerlegt werden. Hierzu könnt ihr z.B. das Paket [FactoMineR](http://factominer.free.fr/factomethods/principal-components-analysis.html) verwenden. Bitte erstellt einen sog. *"Individuals Graph"* mit den Proben und den ersten beiden Hauptkomponenten als Achsen. Wenn ihr das FactoMineR Paket verwendet findet ihr diese Infos unter `pca$ind$coord`. Um einen visuell ansprechenderen Abbildung zu erhalten würde ich empfehlen die Abbildung wieder mit dem Paket **ggplot2** zu erstellen. Mit der Funktion `ggsave()` könnte ihr die mit ggplot2 erstellte Abbildung sehr einfach in ein geeignetes Format, z.B. PDF, png, etc. exportieren.
+
+**Erstellt eine PCA und stellt diese als Abbildung im HTML Dokument dar.**
+
+```{r}
+
+```
+
+## Differentielle Expressions Analyse
+
+Um die DEG-Analyse durchzuführen müssen wir noch definieren an welchen tatsächlichen Vergleichen wir interessiert sind. Dazu können wir uns eine sog. [Kontrast-Matrix](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#contrasts) erstellen. Folgende Vergleiche sind für uns interessant:
+
+-   Sorafenib vs DMSO und
+-   Trametinib vs DMSO,
+
+da wir verstehen wollen, welchen Einfluss die beiden Inhibitoren auf unsere Zellen haben. Für beide Vergleiche bestimmen wir die DEGs und exportieren diese bis zu einem korrigierten (FDR) p-Wert \< 0.05 in eine Tabelle. Hierzu verwenden wir die Funktion `lfcShrink()`. Damit die Tabellen für unsere Kollaborationspartner besser verständlich werden ist es essentiell, dass die Gene mit allen IDs, hautpsächlich aber dem Symbol, in den Ergebnissen enthalten sind.
+
+**Berechnet die DEGs für die beiden Vergleiche Sorafenib vs DMSO und Trametinib vs DMSO. Erstellt Tabellen, die die signifikanten Gene bis zu einem FDR-korrigierten p-Wert \< 0.05 beinhalten. Achtet hier darauf auch das Symbol in der Ergebnistabelle zu haben. Ansonsten fällt die Zuordnung der Gene schwer. Zeigt diese im HTML Dokument. Exportiert die Ergebnisse der DEG-Analyse zusätzlich als Excel-Tabellen.**
+
+Bei der Darstellung der DEG-Ergebnisse innerhalb des HTML Dokuments müsst ihr nicht alle Spalten darstellen. Dies wird schnell sehr unübersichtlich. Ich würde sagen, dass ihr maximal drei Angaben braucht: Symbol, log2FoldChange und den korrigierten p-Wert. Bei der Darstellung innerhalb des HTMLs kann die Funktion `kable()` hilfreich sein.
+
+**Wie viele Gene sind pro Vergleich signifikant reguliert? Wie verteilt sich die Anzahl auf hoch- bzw. runter-regulierte Gene? Stellt diese Ergebnisse anschaulich dar.**
+
+Hinweis: Hierzu könnt ihr den `log2FoldChange` aus der DEG-Analyse verwenden.
+
+```{r}
+
+```
+
+### Identifizierte DEGs als Tabellen
+
+#### Sorafenib vs. DMSO
+
+```{r}
+#| eval: false
+#| tbl-subcap:
+#|   - "Up-Regulated"
+#|   - "Down-Regulated"
+#| layout-ncol: 2
+#| tbl-cap: "DEGs Sorafenib vs. DMSO"
+
+kable(df_up[, c("Symbol", "log2FoldChange_new", "padj_new")], row.names = FALSE, "html", col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "800px")
+```
+
+#### Trametinib vs. DMSO
+
+```{r}
+
+```
+
+### Visuelle Darstellung: Volcano Plot
+
+Zusätzlich zur tabellarischen Darstellung der DEG-Ergebnisse kann man diese auch als sog. *"Volcano Plots"* darstellen. Dabei werden alle Gene als Punkte mit ihrem Signifikanzwert (y-Achse) und dem log2FoldChange (x-Achse) dargestellt. Die signifikanten Gene werden dabei farblich hervorgehoben. Mit dem R Paket [EnhancedVolcano](http://www.bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html) haben wir gute Erfahrungen gemacht.
+
+**Erstellt jeweils einen Volcano Plot für die beiden Vergleiche.**
+
+```{r}
+
+```
+
+#### Volcano Plot: Sorafenib vs. DMSO
+
+```{r}
+
+```
+
+#### Volcano Plot: Trametinib vs DMSO
+
+```{r}
+
+```
+
+## Vergleich der beiden Medikamente
+
+Um die Unterschiede und Gemeinsamkeiten zwischen den beiden Medikamenten bzw. deren jeweilligen Vergleiche zu DMSO zu finden, können wir das R Paket [UpSetR](https://github.com/hms-dbmi/UpSetR) verwenden. Da wir beide Medikament zu DMSO verglichen habenist das Vorgehen sinnvoll und wir können direkt Unterschiede und Gemeinsamkeiten identifizieren. Wir nehmen den Vergleich auf Ebene der signifikant regulierten Gene, getrennt nach hoch- bzw. runter-Regulation, vor. Dazu legen wir uns zwei Listen an, analog zu [Basic Usage](https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html). Eine für die hoch-regulierten und eine für die runter-regulierten Gene. Danach kann der Befehl `upset(fromList(list))` verwendet werden. Um an die einzelnen Gene in den verschiedenen *"Sets"* zu kommen, stellen wir euch eine Funktion `upSetSets(list)` zur Verfügung. Als Input Parameter übergebt ihr dieser Funktion die Liste, die auch für `upset()` verwendet wird.
+
+**Führt den Vergleich der beiden Medikamente durch.**
+
+```{r}
+# function to obtain genes per set
+upSetSets <- function(sets){
+  list_names <- names(sets)
+  attach(sets,warn.conflicts = F)
+  res <- lapply(1:length(list_names),function(y){
+    combinations <- combn(list_names,y)
+    res<-as.list(apply(combinations,2,function(x){
+      if(length(x)==1){
+        p <- setdiff(get(x),unlist(sapply(setdiff(list_names,x),get)))
+      }
+
+      else if(length(x) < length(list_names)){
+        p <- setdiff(Reduce(intersect,lapply(x,get)),
+        Reduce(union,sapply(setdiff(list_names,x),get)))
+      }
+
+      else p <- Reduce(intersect,lapply(x,get))
+
+      if(!identical(p,character(0))) p
+      else NA
+    }))
+
+    if(y==length(list_names)) {
+      res[[1]] <- unlist(res);
+      res<-res[1]
+    }
+    names(res) <- apply(combinations,2,paste,collapse="-")
+    res
+  })
+  result <- lapply(res, function(x) x[!is.na(x)])
+  result <- unlist(result, recursive = F)
+  result <- lapply(result,function(x) data.frame(ID=x))
+  return(result)
+  detach(sets)
+}
+```
+
+```{r}
+
+```
+
+### Gemeinsamkeiten
+
+#### Durch beide Medikamente hoch-regulierte Gene
+
+```{r}
+
+```
+
+#### Durch beide Medikamente runter-regulierte Gene
+
+```{r}
+
+```
+
+Jetzt kennen wir die Gene, die entweder durch beiden Medikamente oder auch nur in dem einen oder dem anderen verändert sind. Aber was machen wir jetzt damit? Wir können uns z.B. der Ressource *"Molecular Signatures Database"* (MSigDB) bedienen.
+
+"MSigDB is a resource of tens of thousands of annotated gene sets for use with GSEA (gene-set enrichment analysis) software".
+
+Die "gene-set enrichment" Analyse ist eine Berechnungsmethode, mit der festgestellt wird, ob ein a priori definierter Satz von Genen statistisch signifikante, übereinstimmende Unterschiede zwischen zwei biologischen Zuständen (z.B. Phänotypen) zeigt. Anders ausgedrückt können wir damit bestimmen, ob die Gene innerhlab der oben bestimmten *"Sets"* einen signifikante "Funktion" haben und daraus schlußfolgern, dass diese "Funktion" in unserem Experiment verändert ist. Für die Analyse verwenden wir den Exakten Test nach Fisher oder auch hypergeometrischer Test. Die Funktion `hyperG()` für den Test stellen wir euch zur Verfügung.
+
+```{r}
+hyperG <- function(geneSets,DEgenes,universe, cutoff=0.1, mincount=2, parallel=T, adj.P.Val = F,
+                   set.size = NULL){
+  #' hyperG
+  #' 
+  #' @description Calculates Fisher's Exact test with the specified genes and the supplied gene-sets.
+  #'
+  #' @param geneSets list. Gene-Set the calculation is based on, e.g. go.bp
+  #' @param DEgenes character vector. Gene IDs used for testing. Same identifiers as used for the gene-sets, e.g. ENTREZ IDs.
+  #' @param universe character vector. Universe gene IDs.
+  #' @param cutoff numeric. Cutoff used to identify sig. pathways. Default: 0.1.
+  #' @param mincount numeric. Consider only pathways which contain at least mincount genes. Default: 2
+  #' @param parallel boolean. Use parallel calculation. Default: TRUE
+  #' @param adj.P.Val boolean. Use adjusted p-value for significance filtering. Is always calculated.
+  #' @param set.size vector. Min and max size of allowed gene-sets. Default min:10 genes and max:500 genes.
+  #'  
+  #' @return the significant regualted pathways.
+  #' @export
+  #' @importFrom foreach, doMC
+  
+  require(foreach)
+  require(doMC)
+  if(parallel){
+    registerDoMC(cores=detectCores())
+    cores=detectCores()
+  }else{
+    cores=1
+  }
+  if(!is.null(set.size)){
+    print('Set Size Limits')
+    idx <- lapply(geneSets,function(x){length(x) <= set.size[2] & length(x) >= set.size[1]})
+    geneSets <- geneSets[unlist(idx)]
+  }
+  l <- length(setdiff(universe,DEgenes))
+  DElen <- length(DEgenes)
+  results <- mclapply(1:length(geneSets), function(i){
+    results <- matrix(data=NA,ncol=7,nrow = 1)
+    colnames(results) <- c('Term','Count','Size','p-value','adj.P.Val','odds ratio','GeneIDs')
+    geneSet <- intersect(universe, geneSets[[i]])
+  e <- intersect(DEgenes,geneSet)
+    a <- length(e)
+    b <- DElen - a
+    c <- length(geneSet) - a
+    d <- l - c
+    contigency.matrix <- cbind(c(a,b),c(c,d))
+    res <- fisher.test(contigency.matrix,alternative = 'greater')
+    results[1,'Term'] <- names(geneSets)[i]
+    results[1,'Count'] <- a
+    results[1,'Size'] <- length(geneSets[[i]])
+    results[1,'p-value'] <- res$p.value
+    results[1,'odds ratio'] <- res$estimate[[1]]
+    # find genes annotated in the consensus term
+    if(a > 0){
+      genes <- intersect(DEgenes,geneSet)
+      eid <- genes
+      eid <- eid[order(eid)]
+      results[1,'GeneIDs'] <- paste(eid,collapse="|")
+    }
+    return(results)
+  }, mc.cores=cores)
+    
+  results <- as.data.frame(do.call(rbind, results))
+  for(i in c(2, 3, 4, 5)){
+    results[, i] <- as.numeric(as.character(results[, i]))
+  }
+  
+  if(nrow(results) != 1){
+    results <- results[order(results[,'p-value'],decreasing = FALSE),]
+  results[,'adj.P.Val'] <- p.adjust(results[,'p-value'], 'BH')
+  if(adj.P.Val){
+    results <- as.data.frame(subset(results,results[,'adj.P.Val']<=cutoff))
+  }else{
+    results <- as.data.frame(subset(results,results[,'p-value']<=cutoff))
+  }
+    results <- as.data.frame(subset(results,results[,'Count']>=mincount))
+  }else results <- as.data.frame(results)
+  
+  return(results)
+}
+```
+
+Außer der Funktion benötigen wir noch die entsprechenden Gensets/ Signalwegen, die uns interessieren. Diese können wir direkt über ein R Paket von MSigDB (msigdbr) beziehen. Auch hierzu stellen wir euch eine Funktion zur Verfügung, die das abrufen und erstellen der passenden Gensets vereinfacht. Wir laden uns damit die "Hallmark Gene Sets" direkt mit den *Gen-Symbolen* der Gene als IDs. Das geladene Genset ist eine Liste, die direkt als Input für die Funktion `hyperG()` verwendet werden können.
+
+```{r}
+get_geneset_ag <- function(
+  species = "Homo sapiens",
+  category = NULL,
+  subcollection = NULL,
+  format = "entrez"
+) {
+  require(msigdbr)
+  db_df <- msigdbr(species = species ,category = category, subcollection = subcollection)
+  if(format == "entrez"){
+    m_list = db_df %>% split(x = as.character(.$entrez_gene), f = .$gs_name)
+    for(idx in 1:length(m_list)){
+      m_list[[idx]] <- unique(m_list[[idx]] )
+    }
+    return(m_list)
+  }
+  if(format == "symbol"){
+    m_list = db_df %>% split(x = .$gene_symbol, f = .$gs_name)
+    for(idx in 1:length(m_list)){
+      m_list[[idx]] <- unique(m_list[[idx]])
+    }
+    return(m_list)
+  }
+  if(format == "df"){
+    return(db_df)
+  }
+}
+```
+
+```{r}
+# load Hallmark gene set
+hallmark <- get_geneset_ag(species = "Homo sapiens", category = "H", format = "symbol")
+```
+
+Um die Funktion `hyperG()` ausführen zu können brauchen wir jetzt noch ein sog. *"universe"*. Dieses beinhaltet alle Gene, die in unserem Experiment enthalten sind. Das *"universe"* ist ein Vektor, der alle Gene als Symbole beinhaltet. Es sollten keine NAs und/ oder Duplikate enthalten sein.
+
+**Erstellt das "universe" und führt die funktionelle Analye/ Gene-set Enrichment Analyse mit der hyperG Funktion und den Hallmark Signalwegen durch**
+
+```{r}
+
+```
+
+#### Gemeinsamkeiten: Durch beide Medikamente hoch-regulierte Hallmark Gensets
+
+```{r}
+
+```
+
+#### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
+
+```{r}
+
+```
+
+# Anhang
+
+```{r}
+sessionInfo()
+```
