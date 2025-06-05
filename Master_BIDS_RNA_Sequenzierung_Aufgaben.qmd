@@ -280,6 +280,9 @@ dds <- DESeqDataSetFromMatrix(
   design    = ~ group
 )
 
+# Setze untreated group
+dds$group <- relevel(dds$group, ref = 'DMSO') 
+
 # Vorfilter
 minCounts <- 5
 keep <- rowSums(counts(dds)) >= minCounts
@@ -372,7 +375,18 @@ Bevor wir mit der tatsächlichen DEG-Analyse fortfahren berechnen wir eine PCA u
 **Erstellt eine PCA und stellt diese als Abbildung im HTML Dokument dar.**
 
 ```{r}
+pca <- plotPCA(rld, intgroup = "group", returnData = TRUE)
+# Variance explained
+percentVar <- round(100 * attr(pca, "percentVar"))
 
+# Plot
+ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
+  geom_point(size = 3) +
+  geom_text(vjust = -1.2, size = 3) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  coord_fixed() +
+  theme_minimal()
 ```
 
 ## Differentielle Expressions Analyse
@@ -393,7 +407,30 @@ Bei der Darstellung der DEG-Ergebnisse innerhalb des HTML Dokuments müsst ihr n
 Hinweis: Hierzu könnt ihr den `log2FoldChange` aus der DEG-Analyse verwenden.
 
 ```{r}
+## ref:
+## https://www.youtube.com/watch?v=0b24mpzM_5M (theory)
+## https://www.youtube.com/watch?v=OzNzO8qwwp0 (R)
 
+# collapse technical replicates? (necessary?)
+
+# Perform analysis
+dds <- DESeq(dds)
+res <- results(dds)
+summary(res)
+
+# set lower alpha
+res5 <- results(dds, alpha = 0.05)
+summary(res5)
+
+# compare contrasts vs baseline model
+resultsNames(dds)
+results(dds, contrast = c("group", "Sorafenib", "DMSO"))
+results(dds, contrast = c("group", "Trametinib", "DMSO"))
+results(dds, contrast = c("group", "Sorafenib", "Trametinib"))
+
+plotMA(res) # look in the right upper and lower areas for significant outliers
+ 
+ 
 ```
 
 ### Identifizierte DEGs als Tabellen
@@ -443,7 +480,7 @@ Zusätzlich zur tabellarischen Darstellung der DEG-Ergebnisse kann man diese auc
 
 ## Vergleich der beiden Medikamente
 
-Um die Unterschiede und Gemeinsamkeiten zwischen den beiden Medikamenten bzw. deren jeweilligen Vergleiche zu DMSO zu finden, können wir das R Paket [UpSetR](https://github.com/hms-dbmi/UpSetR) verwenden. Da wir beide Medikament zu DMSO verglichen habenist das Vorgehen sinnvoll und wir können direkt Unterschiede und Gemeinsamkeiten identifizieren. Wir nehmen den Vergleich auf Ebene der signifikant regulierten Gene, getrennt nach hoch- bzw. runter-Regulation, vor. Dazu legen wir uns zwei Listen an, analog zu [Basic Usage](https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html). Eine für die hoch-regulierten und eine für die runter-regulierten Gene. Danach kann der Befehl `upset(fromList(list))` verwendet werden. Um an die einzelnen Gene in den verschiedenen *"Sets"* zu kommen, stellen wir euch eine Funktion `upSetSets(list)` zur Verfügung. Als Input Parameter übergebt ihr dieser Funktion die Liste, die auch für `upset()` verwendet wird.
+Um die Unterschiede und Gemeinsamkeiten zwischen den beiden Medikamenten bzw. deren jeweiligen Vergleiche zu DMSO zu finden, können wir das R Paket [UpSetR](https://github.com/hms-dbmi/UpSetR) verwenden. Da wir beide Medikament zu DMSO verglichen haben, ist das Vorgehen sinnvoll und wir können direkt Unterschiede und Gemeinsamkeiten identifizieren. Wir nehmen den Vergleich auf Ebene der signifikant regulierten Gene, getrennt nach hoch- bzw. runter-Regulation, vor. Dazu legen wir uns zwei Listen an, analog zu [Basic Usage](https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html). Eine für die hoch-regulierten und eine für die runter-regulierten Gene. Danach kann der Befehl `upset(fromList(list))` verwendet werden. Um an die einzelnen Gene in den verschiedenen *"Sets"* zu kommen, stellen wir euch eine Funktion `upSetSets(list)` zur Verfügung. Als Input Parameter übergebt ihr dieser Funktion die Liste, die auch für `upset()` verwendet wird.
 
 **Führt den Vergleich der beiden Medikamente durch.**
 
