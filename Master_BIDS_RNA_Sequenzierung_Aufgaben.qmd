@@ -284,10 +284,9 @@ dds <- DESeqDataSetFromMatrix(
 dds$group <- relevel(dds$group, ref = 'DMSO') 
 
 # Vorfilter
-minCounts <- 5
-keep <- rowSums(counts(dds)) >= minCounts
-sum(keep) # keeping 23,938 records
-sum(dim(count_matrix)[1]-sum(keep)) # discarding 33'835 records
+keep <- rowSums(counts(dds) >= 5 ) >= 2
+sum(keep) # keeping 18,198 records
+sum(dim(count_matrix)[1]-sum(keep)) # discarding 39,575 records
 dds <- dds[keep,] 
 ```
 
@@ -375,6 +374,7 @@ Bevor wir mit der tatsächlichen DEG-Analyse fortfahren berechnen wir eine PCA u
 **Erstellt eine PCA und stellt diese als Abbildung im HTML Dokument dar.**
 
 ```{r}
+### PCA: Principal Component Analysis (linear relationship analysis)
 pca <- plotPCA(rld, intgroup = "group", returnData = TRUE)
 # Variance explained
 percentVar <- round(100 * attr(pca, "percentVar"))
@@ -387,6 +387,62 @@ ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   coord_fixed() +
   theme_minimal()
+# Interpretation
+# ==============
+# PCA erklärt 87% der Gesamtvarianz in 2 Dimensionen
+# DMSO bildet einen Cluster, die Samples kann als (linear) homogen angenommen werden
+# Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
+# Trametinib bildet zwei Cluster, die Samples sind daher nicht (linear) homogen
+
+
+### MDS: Multi-dimensional Scaling (linear relationship analysis)
+# Compute distance matrix from rlog-transformed data
+d <- dist(t(assay(rld)))  # transpose because samples are columns
+# Perform classical MDS (multi-dimensional scaling)
+mds <- cmdscale(d, k = 2)  # k = number of dimensions (2D)
+# Create a data frame with sample information
+mds_df <- as.data.frame(mds)
+mds_df$group <- colData(rld)$group  # adjust 'group' to your grouping column
+# Plot with ggplot2
+ggplot(mds_df, aes(x = V1, y = V2, color = group)) +
+  geom_point(size = 3) +
+  labs(x = "MDS1", y = "MDS2") +
+  theme_minimal()
+# Interpretation
+# ==============
+# MDS zeigt ähnliches Bild wie PCA
+# Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
+# DMSO und Trametinib bilden jeweils zwei Cluster, die Samples scheinen daher nicht-lineare Beziehungen zu haben, die von der MDS nicht erfasst werden
+
+### t-SNA: t-distributed stochastic neighbor embedding for non-linear relationship analysis
+library(Rtsne)
+# Extract assay data (genes x samples) and transpose to samples x genes
+mat <- t(assay(rld))
+
+# Optionally: reduce to top variable genes to speed up and denoise
+top_var_genes <- head(order(apply(mat, 2, var), decreasing = TRUE), 500)
+mat_top <- mat[, top_var_genes]
+
+# Run t-SNE (you can adjust perplexity; try 5–30 depending on sample size)
+set.seed(42)  # for reproducibility
+tsne_out <- Rtsne(mat_top, dims = 2, perplexity = 1, verbose = TRUE)
+
+# Combine with metadata
+tsne_df <- data.frame(
+  TSNE1 = tsne_out$Y[,1],
+  TSNE2 = tsne_out$Y[,2],
+  group = colData(rld)$group  # adjust if your metadata column is named differently
+)
+
+# Plot with ggplot2
+ggplot(tsne_df, aes(x = TSNE1, y = TSNE2, color = group)) +
+  geom_point(size = 3) +
+  labs(title = "t-SNE of RNA-seq samples", x = "t-SNE 1", y = "t-SNE 2") +
+  theme_minimal()
+# Interpretation
+# ==============
+# Ganz deutliche Cluster zu erkennen; DMSO und Tramatinib bilden jeweils einen Cluster, zusammen einen größeren. Daher kann davon ausgegangen, dass Trametinib keine über die Baseline hinausgehende nicht-lineare Beziehung aufweisen.
+# Sorafenib bildet einen Cluster deutlich abseits der Kontrollgruppe und von Trametinib, das kann als Indikator für einen tatsächlichen Unterschied gewertet werden
 ```
 
 ## Differentielle Expressions Analyse
@@ -411,29 +467,74 @@ Hinweis: Hierzu könnt ihr den `log2FoldChange` aus der DEG-Analyse verwenden.
 ## https://www.youtube.com/watch?v=0b24mpzM_5M (theory)
 ## https://www.youtube.com/watch?v=OzNzO8qwwp0 (R)
 
-# collapse technical replicates? (necessary?)
+if (!require("ashr", quietly = TRUE))
+    install.packages("ashr")
 
-# Perform analysis
+library(ashr)
+
 dds <- DESeq(dds)
-res <- results(dds)
-summary(res)
 
-# set lower alpha
-res5 <- results(dds, alpha = 0.05)
-summary(res5)
+# Sorafenib vs DMSO
+res_sora <- lfcShrink(dds, contrast = c("group", "Sorafenib", "DMSO"), type = "ashr")
 
-# compare contrasts vs baseline model
-resultsNames(dds)
-results(dds, contrast = c("group", "Sorafenib", "DMSO"))
-results(dds, contrast = c("group", "Trametinib", "DMSO"))
-results(dds, contrast = c("group", "Sorafenib", "Trametinib"))
+# Trametinib vs DMSO
+res_tram <- lfcShrink(dds, contrast = c("group", "Trametinib", "DMSO"), type = "ashr")
 
-plotMA(res) # look in the right upper and lower areas for significant outliers
+# Hilfsfunktion für Filter & Format
+filter_deg <- function(res) {
+  as.data.frame(res) |>
+    rownames_to_column("ENSEMBL") |>
+    mutate(Symbol = gene_symbols[ENSEMBL]) |>
+    filter(padj < 0.05 & !is.na(Symbol)) |>
+    select(Symbol, log2FoldChange, padj) |>
+    arrange(desc(abs(log2FoldChange))) # sort by effect size
+}
+
+filter_deg <- function(res) {
+  as.data.frame(res) |>
+    rownames_to_column("ENSEMBL") |>
+    left_join(gene_reference[, c("ENSEMBL", "Symbol")], by = "ENSEMBL") |>
+    filter(padj < 0.05 & !is.na(Symbol)) |>
+    select(Symbol, log2FoldChange, padj) |>
+    arrange(desc(abs(log2FoldChange)))  # nach Effektgröße sortieren
+}
+
+deg_sora <- filter_deg(res_sora)
+deg_tram <- filter_deg(res_tram)
+
+## compare up and down-regulated genes
+count_regulation <- function(df) {
+  df |> 
+    mutate(Regulation = case_when(
+      log2FoldChange > 0 ~ "Upregulated",
+      log2FoldChange < 0 ~ "Downregulated"
+    )) |> 
+    count(Regulation)
+}
+
+sora_counts <- count_regulation(deg_sora)
+tram_counts <- count_regulation(deg_tram)
  
+# Visualize
+sora_counts$Comparison <- "Sorafenib vs DMSO"
+tram_counts$Comparison <- "Trametinib vs DMSO"
+all_counts <- bind_rows(sora_counts, tram_counts)
+
+ggplot(all_counts, aes(x = Comparison, y = n, fill = Regulation)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Differenziell regulierte Gene", y = "Anzahl Gene") +
+  theme_minimal()
  
 ```
 
 ### Identifizierte DEGs als Tabellen
+```{r}
+
+kable(head(deg_sora, 10), caption = "Top DEGs: Sorafenib vs DMSO")
+kable(head(deg_tram, 10), caption = "Top DEGs: Trametinib vs DMSO")
+
+```
+
 
 #### Sorafenib vs. DMSO
 
@@ -445,7 +546,7 @@ plotMA(res) # look in the right upper and lower areas for significant outliers
 #| layout-ncol: 2
 #| tbl-cap: "DEGs Sorafenib vs. DMSO"
 
-kable(df_up[, c("Symbol", "log2FoldChange_new", "padj_new")], row.names = FALSE, "html", col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
+kable(df[, c("Symbol", "log2FoldChange", "padj")], row.names = FALSE, "html", col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "800px")
 ```
@@ -463,19 +564,47 @@ Zusätzlich zur tabellarischen Darstellung der DEG-Ergebnisse kann man diese auc
 **Erstellt jeweils einen Volcano Plot für die beiden Vergleiche.**
 
 ```{r}
+if (!requireNamespace("EnhancedVolcano", quietly = TRUE)) {
+  BiocManager::install("EnhancedVolcano")
+}
+library(EnhancedVolcano)
 
 ```
 
 #### Volcano Plot: Sorafenib vs. DMSO
 
 ```{r}
-
+EnhancedVolcano(res_sora,
+    lab = gene_symbols[rownames(res_sora)],
+    x = 'log2FoldChange',
+    y = 'padj',
+    pCutoff = 0.05,
+    FCcutoff = 1,
+    pointSize = 2.0,
+    labSize = 3.0,
+    title = 'Sorafenib vs DMSO',
+    subtitle = 'Differentiell exprimierte Gene',
+    caption = 'log2FC > 1, FDR < 0.05',
+    legendLabels = c('NS', 'Log2FC', 'FDR', 'FDR & Log2FC'),
+    legendPosition = 'right')
 ```
 
 #### Volcano Plot: Trametinib vs DMSO
 
 ```{r}
-
+EnhancedVolcano(res_tram,
+    lab = gene_symbols[rownames(res_tram)],
+    x = 'log2FoldChange',
+    y = 'padj',
+    pCutoff = 0.05,
+    FCcutoff = 1,
+    pointSize = 2.0,
+    labSize = 3.0,
+    title = 'Trametinib vs DMSO',
+    subtitle = 'Differentiell exprimierte Gene',
+    caption = 'log2FC > 1, FDR < 0.05',
+    legendLabels = c('NS', 'Log2FC', 'FDR', 'FDR & Log2FC'),
+    legendPosition = 'right')
 ```
 
 ## Vergleich der beiden Medikamente
@@ -485,6 +614,11 @@ Um die Unterschiede und Gemeinsamkeiten zwischen den beiden Medikamenten bzw. de
 **Führt den Vergleich der beiden Medikamente durch.**
 
 ```{r}
+if (!requireNamespace("UpSetR", quietly = TRUE)) {
+  install.packages("UpSetR")
+}
+library(UpSetR)
+
 # function to obtain genes per set
 upSetSets <- function(sets){
   list_names <- names(sets)
@@ -522,23 +656,50 @@ upSetSets <- function(sets){
 }
 ```
 
-```{r}
-
-```
-
 ### Gemeinsamkeiten
 
 #### Durch beide Medikamente hoch-regulierte Gene
 
 ```{r}
+up_sora <- deg_sora |> filter(log2FoldChange > 0) |> pull(Symbol)
+up_tram <- deg_tram |> filter(log2FoldChange > 0) |> pull(Symbol)
 
+up_list <- list(
+  Sorafenib = up_sora,
+  Trametinib = up_tram
+)
 ```
 
 #### Durch beide Medikamente runter-regulierte Gene
 
 ```{r}
+down_sora <- deg_sora |> filter(log2FoldChange < 0) |> pull(Symbol)
+down_tram <- deg_tram |> filter(log2FoldChange < 0) |> pull(Symbol)
 
+down_list <- list(
+  Sorafenib = down_sora,
+  Trametinib = down_tram
+)
 ```
+
+```{r}
+## Plots
+# Hochregulierte Gene
+upset(fromList(up_list), 
+      order.by = "freq",
+      mainbar.y.label = "Gemeinsame hochregulierte Gene",
+      sets.x.label = "Gene pro Medikament")
+
+# Runterregulierte Gene
+upset(fromList(down_list), 
+      order.by = "freq",
+      mainbar.y.label = "Gemeinsame runterregulierte Gene",
+      sets.x.label = "Gene pro Medikament")
+
+head(upSetSets(up_list))  # für hochregulierte Gene
+head(upSetSets(down_list))  # für runterregulierte Gene
+```
+
 
 Jetzt kennen wir die Gene, die entweder durch beiden Medikamente oder auch nur in dem einen oder dem anderen verändert sind. Aber was machen wir jetzt damit? Wir können uns z.B. der Ressource *"Molecular Signatures Database"* (MSigDB) bedienen.
 
@@ -668,18 +829,44 @@ Um die Funktion `hyperG()` ausführen zu können brauchen wir jetzt noch ein sog
 **Erstellt das "universe" und führt die funktionelle Analye/ Gene-set Enrichment Analyse mit der hyperG Funktion und den Hallmark Signalwegen durch**
 
 ```{r}
+# Extrahiere die ENSEMBL-IDs aus dem dds-Objekt
+ensembl_ids <- rownames(dds)
 
+# Verknüpfe mit gene_reference, um die Symbolnamen zu erhalten
+universe_df <- tibble(ENSEMBL = ensembl_ids) |>
+  left_join(gene_reference[, c("ENSEMBL", "Symbol")], by = "ENSEMBL")
+
+#  Erstelle das Universe: eindeutige, nicht-leere Symbolnamen
+universe <- universe_df$Symbol |> unique() |> na.omit()
 ```
 
 #### Gemeinsamkeiten: Durch beide Medikamente hoch-regulierte Hallmark Gensets
 
 ```{r}
+enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
+# Optional: nur Top 10 signifikante
+top_enrichment <- enrichment_up_sora |> 
+  slice_min(order_by = `adj.P.Val`, n = 10)
 
+ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Top Enriched Hallmark Pathways (Sorafenib UP)",
+    x = "Pathway",
+    y = "-log10(adj. p-value)"
+  ) +
+  theme_minimal()
+
+enrichment_down_sora <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
 ```
 
 #### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
 
 ```{r}
+enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
+
+enrichment_down_tram <- hyperG(hallmark, down_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
 
 ```
 
