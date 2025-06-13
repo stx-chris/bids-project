@@ -836,7 +836,7 @@ ensembl_ids <- rownames(dds)
 universe_df <- tibble(ENSEMBL = ensembl_ids) |>
   left_join(gene_reference[, c("ENSEMBL", "Symbol")], by = "ENSEMBL")
 
-#  Erstelle das Universe: eindeutige, nicht-leere Symbolnamen
+#  Erstelle das Universe
 universe <- universe_df$Symbol |> unique() |> na.omit()
 ```
 
