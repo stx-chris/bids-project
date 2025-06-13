@@ -860,9 +860,15 @@ top_enrichment_plot <- function(ds, title) {
 
 enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
 top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
+## Interpretation (KI-unterstützt)
+## ==============
+## Die Behandlung mit Sorafenib führt zu einer signifikanten Hochregulation von Genen, die mit dem Zelltod (Apoptosis, p53), zellulärem Stress (zB Uv-Antwort), Immunantwort (Interferon Gamma) und Stoffwechselprozessen (Adipogenese, Häm- und Peroxisomenstoffwechsel) assoziiert sind. Dies unterstützt die bekannte cytotoxische und wachstumshemmende Wirkung von Sorafenib auf zellulärer Ebene.
 
 enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
 top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trametinib UP)")
+## Interpretation
+## ==============
+## ?
 ```
 
 #### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
@@ -870,9 +876,16 @@ top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trameti
 ```{r}
 enrichment_down_sora <- hyperG(hallmark, down_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
 top_enrichment_plot(enrichment_down_sora, "Top Enriched Hallmark Pathways (Sorafenib DOWN)")
+## Interpretation (KI-unterstützt)
+## ==============
+## Sorafenib führt zur signifikanten Herunterregulierung von Genen, die an Zellwachstum (MYC, mTORC1, G2M), Zellzyklusprogression, Entzündungsreaktionen (TNFα/NFκB) und Stressantworten beteiligt sind. Diese Ergebnisse sprechen für eine starke antiproliferative und antiinflammatorische Wirkung des Medikaments, ergänzt durch eine Hemmung zellulärer Überlebenssignale.
 
 enrichment_down_tram <- hyperG(hallmark, down_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
 top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trametinib DOWN)")
+## Interpretation (KI-unterstützt)
+## ==============
+## Trametinib führt zu einer ausgeprägten Unterdrückung entzündungsbezogener Signalwege (TNFα/NFκB, IL-2, IL-6, STAT3), Zellüberlebenssignale sowie Komponenten der MAPK-Kaskade (KRAS). Diese Ergebnisse sind kompatibel mit dem Wirkmechanismus von Trametinib als MEK-Inhibitor und deuten auf eine kombinierte hemmende Wirkung auf Proliferation, Entzündung und Stressantwort hin.
+
 
 ```
 
