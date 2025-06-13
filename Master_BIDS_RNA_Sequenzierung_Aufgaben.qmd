@@ -484,15 +484,6 @@ res_tram <- lfcShrink(dds, contrast = c("group", "Trametinib", "DMSO"), type = "
 filter_deg <- function(res) {
   as.data.frame(res) |>
     rownames_to_column("ENSEMBL") |>
-    mutate(Symbol = gene_symbols[ENSEMBL]) |>
-    filter(padj < 0.05 & !is.na(Symbol)) |>
-    select(Symbol, log2FoldChange, padj) |>
-    arrange(desc(abs(log2FoldChange))) # sort by effect size
-}
-
-filter_deg <- function(res) {
-  as.data.frame(res) |>
-    rownames_to_column("ENSEMBL") |>
     left_join(gene_reference[, c("ENSEMBL", "Symbol")], by = "ENSEMBL") |>
     filter(padj < 0.05 & !is.na(Symbol)) |>
     select(Symbol, log2FoldChange, padj) |>
@@ -575,7 +566,7 @@ library(EnhancedVolcano)
 
 ```{r}
 EnhancedVolcano(res_sora,
-    lab = gene_symbols[rownames(res_sora)],
+    lab = gene_reference$Symbol[match(rownames(res_sora), gene_reference$ENSEMBL)],
     x = 'log2FoldChange',
     y = 'padj',
     pCutoff = 0.05,
@@ -593,7 +584,7 @@ EnhancedVolcano(res_sora,
 
 ```{r}
 EnhancedVolcano(res_tram,
-    lab = gene_symbols[rownames(res_tram)],
+    lab = gene_reference$Symbol[match(rownames(res_tram), gene_reference$ENSEMBL)],
     x = 'log2FoldChange',
     y = 'padj',
     pCutoff = 0.05,
