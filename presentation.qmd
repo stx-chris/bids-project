@@ -1,7 +1,7 @@
 ---
 title: "Habits"
 author: "John Doe"
-format: revealjs
+format: pptx
 ---
 
 # In the morning

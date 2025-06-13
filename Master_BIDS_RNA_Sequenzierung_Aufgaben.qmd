@@ -284,7 +284,7 @@ dds <- DESeqDataSetFromMatrix(
 dds$group <- relevel(dds$group, ref = 'DMSO') 
 
 # Vorfilter
-keep <- rowSums(counts(dds) >= 5 ) >= 2
+keep <- rowSums(counts(dds) >= 10) >= 2
 sum(keep) # keeping 18,198 records
 sum(dim(count_matrix)[1]-sum(keep)) # discarding 39,575 records
 dds <- dds[keep,] 
@@ -393,8 +393,11 @@ ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
 # DMSO bildet einen Cluster, die Samples kann als (linear) homogen angenommen werden
 # Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
 # Trametinib bildet zwei Cluster, die Samples sind daher nicht (linear) homogen
+```
 
+**MDS**
 
+```{r}
 ### MDS: Multi-dimensional Scaling (linear relationship analysis)
 # Compute distance matrix from rlog-transformed data
 d <- dist(t(assay(rld)))  # transpose because samples are columns
@@ -413,7 +416,13 @@ ggplot(mds_df, aes(x = V1, y = V2, color = group)) +
 # MDS zeigt ähnliches Bild wie PCA
 # Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
 # DMSO und Trametinib bilden jeweils zwei Cluster, die Samples scheinen daher nicht-lineare Beziehungen zu haben, die von der MDS nicht erfasst werden
+```
 
+**t-SNA**
+
+```{r}
+#| echo: false
+#| messages: false
 ### t-SNA: t-distributed stochastic neighbor embedding for non-linear relationship analysis
 library(Rtsne)
 # Extract assay data (genes x samples) and transpose to samples x genes
@@ -463,6 +472,7 @@ Bei der Darstellung der DEG-Ergebnisse innerhalb des HTML Dokuments müsst ihr n
 Hinweis: Hierzu könnt ihr den `log2FoldChange` aus der DEG-Analyse verwenden.
 
 ```{r}
+#| echo: false
 ## ref:
 ## https://www.youtube.com/watch?v=0b24mpzM_5M (theory)
 ## https://www.youtube.com/watch?v=OzNzO8qwwp0 (R)
@@ -687,8 +697,8 @@ upset(fromList(down_list),
       mainbar.y.label = "Gemeinsame runterregulierte Gene",
       sets.x.label = "Gene pro Medikament")
 
-head(upSetSets(up_list))  # für hochregulierte Gene
-head(upSetSets(down_list))  # für runterregulierte Gene
+head(upSetSets(up_list)$Sorafenib)  # für hochregulierte Gene
+head(upSetSets(down_list)$Trametinib)  # für runterregulierte Gene
 ```
 
 
