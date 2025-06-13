@@ -843,30 +843,36 @@ universe <- universe_df$Symbol |> unique() |> na.omit()
 #### Gemeinsamkeiten: Durch beide Medikamente hoch-regulierte Hallmark Gensets
 
 ```{r}
+top_enrichment_plot <- function(ds, title) {
+  top_enrichment <- ds |> 
+    slice_min(order_by = `adj.P.Val`, n = 10)
+
+  ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
+    geom_col(fill = "steelblue") +
+    coord_flip() +
+    labs(
+      title = title,
+      x = "Pathway",
+      y = "-log10(adj. p-value)"
+    ) +
+    theme_minimal()
+}
+
 enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-# Optional: nur Top 10 signifikante
-top_enrichment <- enrichment_up_sora |> 
-  slice_min(order_by = `adj.P.Val`, n = 10)
+top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
 
-ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Top Enriched Hallmark Pathways (Sorafenib UP)",
-    x = "Pathway",
-    y = "-log10(adj. p-value)"
-  ) +
-  theme_minimal()
-
-enrichment_down_sora <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
+enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
+top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trametinib UP)")
 ```
 
 #### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
 
 ```{r}
-enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
+enrichment_down_sora <- hyperG(hallmark, down_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
+top_enrichment_plot(enrichment_down_sora, "Top Enriched Hallmark Pathways (Sorafenib DOWN)")
 
 enrichment_down_tram <- hyperG(hallmark, down_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
+top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trametinib DOWN)")
 
 ```
 
