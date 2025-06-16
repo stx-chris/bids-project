@@ -254,12 +254,12 @@ count_matrix <- reduce(count_list, full_join, by = "GeneID") %>%
 count_matrix
 
 # Matrix speichern
-write.table(
-  x = count_matrix,
-  file = file.path(analysisDir, "counts.txt"),
-  sep = "\t",
-  quote = FALSE
-)
+#write.table(
+#  x = count_matrix,
+#  file = file.path(analysisDir, "counts.txt"),
+#  sep = "\t",
+#  quote = FALSE
+#)
 
 # Gene (ENSEMBL-IDs) als Referenz extrahieren
 gene_reference <- getGeneMat(rownames(count_matrix))
@@ -336,13 +336,14 @@ left_join(as.data.frame(colData(dds)) %>%
 rownames_to_column("sample"), by = "sample")
 
 # Boxplot erstellen
-df_raw %>%
+plot_counts_trans <- df_raw %>%
   ggplot(aes(x = sample, y = log2count, fill = group)) +   # why not group?
   geom_boxplot(outlier.size = 0.3) +
   theme_bw() +
   labs(title = "Counts (trans) pro Bedingung",
        x = "Bedingung", y = "Counts (trans)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_counts_trans
 
 ## Normalisierte Counts extrahieren
 norm_counts <- counts(dds, normalized = TRUE)
@@ -358,13 +359,14 @@ left_join(as.data.frame(colData(dds)) %>%
 rownames_to_column("sample"), by = "sample")
 
 # Boxplot erstellen
-df_norm %>% 
+plot_counts_normtrans <- df_norm %>% 
   ggplot(aes(x = sample, y = log2normCount, fill = group)) +
   geom_boxplot(outlier.size = 0.3) +
   theme_bw() +
   labs(title = "Counts (norm, trans) pro Bedingung",
        x = "Bedingung", y = "Counts (norm, trans)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_counts_normtrans
 ```
 
 ## PCA - Principal Component Analysis
@@ -380,13 +382,14 @@ pca <- plotPCA(rld, intgroup = "group", returnData = TRUE)
 percentVar <- round(100 * attr(pca, "percentVar"))
 
 # Plot
-ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
+plot_pca <- ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
   geom_point(size = 3) +
   geom_text(vjust = -1.2, size = 3) +
   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   coord_fixed() +
   theme_minimal()
+plot_pca
 # Interpretation
 # ==============
 # PCA erklärt 87% der Gesamtvarianz in 2 Dimensionen
@@ -407,10 +410,11 @@ mds <- cmdscale(d, k = 2)  # k = number of dimensions (2D)
 mds_df <- as.data.frame(mds)
 mds_df$group <- colData(rld)$group  # adjust 'group' to your grouping column
 # Plot with ggplot2
-ggplot(mds_df, aes(x = V1, y = V2, color = group)) +
+plot_mds <- ggplot(mds_df, aes(x = V1, y = V2, color = group)) +
   geom_point(size = 3) +
   labs(x = "MDS1", y = "MDS2") +
   theme_minimal()
+plot_mds
 # Interpretation
 # ==============
 # MDS zeigt ähnliches Bild wie PCA
@@ -444,14 +448,15 @@ tsne_df <- data.frame(
 )
 
 # Plot with ggplot2
-ggplot(tsne_df, aes(x = TSNE1, y = TSNE2, color = group)) +
+plot_tsna <- ggplot(tsne_df, aes(x = TSNE1, y = TSNE2, color = group)) +
   geom_point(size = 3) +
   labs(title = "t-SNE of RNA-seq samples", x = "t-SNE 1", y = "t-SNE 2") +
   theme_minimal()
+plot_tsna
 # Interpretation
 # ==============
-# Ganz deutliche Cluster zu erkennen; DMSO und Tramatinib bilden jeweils einen Cluster, zusammen einen größeren. Daher kann davon ausgegangen, dass Trametinib keine über die Baseline hinausgehende nicht-lineare Beziehung aufweisen.
-# Sorafenib bildet einen Cluster deutlich abseits der Kontrollgruppe und von Trametinib, das kann als Indikator für einen tatsächlichen Unterschied gewertet werden
+# Ganz deutliche Cluster zu erkennen; DMSO und Tramatinib bilden jeweils einen Cluster, zusammen einen größeren. Daher kann davon ausgegangen, dass Trametinib keinen über die Baseline hinausgehenden qualitativen Unterschied aufweist.
+# Sorafenib bildet einen Cluster deutlich abseits der Kontrollgruppe und von Trametinib, das kann als Indikator für einen qualitativen Unterschied gewertet werden
 ```
 
 ## Differentielle Expressions Analyse
@@ -521,19 +526,21 @@ sora_counts$Comparison <- "Sorafenib vs DMSO"
 tram_counts$Comparison <- "Trametinib vs DMSO"
 all_counts <- bind_rows(sora_counts, tram_counts)
 
-ggplot(all_counts, aes(x = Comparison, y = n, fill = Regulation)) +
+plot_deg <- ggplot(all_counts, aes(x = Comparison, y = n, fill = Regulation)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Differenziell regulierte Gene", y = "Anzahl Gene") +
   theme_minimal()
+plot_deg
  
 ```
 
 ### Identifizierte DEGs als Tabellen
 ```{r}
 
-kable(head(deg_sora, 10), caption = "Top DEGs: Sorafenib vs DMSO")
-kable(head(deg_tram, 10), caption = "Top DEGs: Trametinib vs DMSO")
-
+tab_deg_sora <- kable(head(deg_sora, 10), caption = "Top DEGs: Sorafenib vs DMSO")
+tab_deg_sora
+tab_deg_tram <- kable(head(deg_tram, 10), caption = "Top DEGs: Trametinib vs DMSO")
+tab_deg_tram
 ```
 
 
@@ -547,9 +554,9 @@ kable(head(deg_tram, 10), caption = "Top DEGs: Trametinib vs DMSO")
 #| layout-ncol: 2
 #| tbl-cap: "DEGs Sorafenib vs. DMSO"
 
-kable(df[, c("Symbol", "log2FoldChange", "padj")], row.names = FALSE, "html", col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
-  kable_styling() %>%
-  scroll_box(width = "100%", height = "800px")
+#kable(df[, c("Symbol", "log2FoldChange", "padj")], row.names = FALSE, "html", #col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
+#  kable_styling() %>%
+#  scroll_box(width = "100%", height = "800px")
 ```
 
 #### Trametinib vs. DMSO
@@ -575,7 +582,7 @@ library(EnhancedVolcano)
 #### Volcano Plot: Sorafenib vs. DMSO
 
 ```{r}
-EnhancedVolcano(res_sora,
+plot_volcano_sora <- EnhancedVolcano(res_sora,
     lab = gene_reference$Symbol[match(rownames(res_sora), gene_reference$ENSEMBL)],
     x = 'log2FoldChange',
     y = 'padj',
@@ -588,12 +595,13 @@ EnhancedVolcano(res_sora,
     caption = 'log2FC > 1, FDR < 0.05',
     legendLabels = c('NS', 'Log2FC', 'FDR', 'FDR & Log2FC'),
     legendPosition = 'right')
+plot_volcano_sora
 ```
 
 #### Volcano Plot: Trametinib vs DMSO
 
 ```{r}
-EnhancedVolcano(res_tram,
+plot_volcano_tram <- EnhancedVolcano(res_tram,
     lab = gene_reference$Symbol[match(rownames(res_tram), gene_reference$ENSEMBL)],
     x = 'log2FoldChange',
     y = 'padj',
@@ -606,6 +614,7 @@ EnhancedVolcano(res_tram,
     caption = 'log2FC > 1, FDR < 0.05',
     legendLabels = c('NS', 'Log2FC', 'FDR', 'FDR & Log2FC'),
     legendPosition = 'right')
+plot_volcano_tram
 ```
 
 ## Vergleich der beiden Medikamente
@@ -686,19 +695,24 @@ down_list <- list(
 ```{r}
 ## Plots
 # Hochregulierte Gene
-upset(fromList(up_list), 
+plot_upset_up <- upset(fromList(up_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame hochregulierte Gene",
       sets.x.label = "Gene pro Medikament")
+plot_upset_up
 
 # Runterregulierte Gene
-upset(fromList(down_list), 
+plot_upset_down <- upset(fromList(down_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame runterregulierte Gene",
       sets.x.label = "Gene pro Medikament")
+plot_upset_down
 
-head(upSetSets(up_list)$Sorafenib)  # für hochregulierte Gene
-head(upSetSets(down_list)$Trametinib)  # für runterregulierte Gene
+tab_upset_sora_up <- head(upSetSets(up_list)$Sorafenib)  # für hochregulierte Gene
+tab_upset_tram_up <- head(upSetSets(up_list)$Trametinib)  # für hochregulierte Gene
+
+tab_upset_sora_down <- head(upSetSets(down_list)$Sorafenib)  # für runterregulierte Gene
+tab_upset_tram_down <- head(upSetSets(down_list)$Trametinib)  # für runterregulierte Gene
 ```
 
 
@@ -848,7 +862,7 @@ top_enrichment_plot <- function(ds, title) {
   top_enrichment <- ds |> 
     slice_min(order_by = `adj.P.Val`, n = 10)
 
-  ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
+  return (ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
     geom_col(fill = "steelblue") +
     coord_flip() +
     labs(
@@ -856,17 +870,19 @@ top_enrichment_plot <- function(ds, title) {
       x = "Pathway",
       y = "-log10(adj. p-value)"
     ) +
-    theme_minimal()
+    theme_minimal())
 }
 
 enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
+plot_enrichment_up_sora <- top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
+plot_enrichment_up_sora
 ## Interpretation (KI-unterstützt)
 ## ==============
 ## Die Behandlung mit Sorafenib führt zu einer signifikanten Hochregulation von Genen, die mit dem Zelltod (Apoptosis, p53), zellulärem Stress (zB Uv-Antwort), Immunantwort (Interferon Gamma) und Stoffwechselprozessen (Adipogenese, Häm- und Peroxisomenstoffwechsel) assoziiert sind. Dies unterstützt die bekannte cytotoxische und wachstumshemmende Wirkung von Sorafenib auf zellulärer Ebene.
 
 enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
-top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trametinib UP)")
+plot_enrichment_up_tram <- top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trametinib UP)")
+plot_enrichment_up_tram
 ## Interpretation
 ## ==============
 ## ?
@@ -876,13 +892,15 @@ top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trameti
 
 ```{r}
 enrichment_down_sora <- hyperG(hallmark, down_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-top_enrichment_plot(enrichment_down_sora, "Top Enriched Hallmark Pathways (Sorafenib DOWN)")
+plot_enrichment_down_sora <- top_enrichment_plot(enrichment_down_sora, "Top Enriched Hallmark Pathways (Sorafenib DOWN)")
+plot_enrichment_down_sora
 ## Interpretation (KI-unterstützt)
 ## ==============
 ## Sorafenib führt zur signifikanten Herunterregulierung von Genen, die an Zellwachstum (MYC, mTORC1, G2M), Zellzyklusprogression, Entzündungsreaktionen (TNFα/NFκB) und Stressantworten beteiligt sind. Diese Ergebnisse sprechen für eine starke antiproliferative und antiinflammatorische Wirkung des Medikaments, ergänzt durch eine Hemmung zellulärer Überlebenssignale.
 
 enrichment_down_tram <- hyperG(hallmark, down_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
-top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trametinib DOWN)")
+plot_enrichment_down_tram <- top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trametinib DOWN)")
+plot_enrichment_down_tram
 ## Interpretation (KI-unterstützt)
 ## ==============
 ## Trametinib führt zu einer ausgeprägten Unterdrückung entzündungsbezogener Signalwege (TNFα/NFκB, IL-2, IL-6, STAT3), Zellüberlebenssignale sowie Komponenten der MAPK-Kaskade (KRAS). Diese Ergebnisse sind kompatibel mit dem Wirkmechanismus von Trametinib als MEK-Inhibitor und deuten auf eine kombinierte hemmende Wirkung auf Proliferation, Entzündung und Stressantwort hin.
@@ -893,5 +911,7 @@ top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trame
 # Anhang
 
 ```{r}
+#| cache: false
+save.image(file = "session.RData")
 sessionInfo()
 ```
