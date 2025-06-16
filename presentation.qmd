@@ -1,8 +1,16 @@
 ---
-title: "Habits"
-author: "John Doe"
-format: pptx
+title: "BIDS Projekt - G3"
+author:
+  - Constanze Leichtweiß
+  - Ivanna Marchesini
+  - Christoph Kovacs
+  - Enrico Wondra
+format: revealjs
 ---
+
+```{r}
+load("session.RData")
+```
 
 # In the morning
 
@@ -10,8 +18,17 @@ format: pptx
 
 - Turn off alarm
 - Get out of bed
+```{r}
+plot_counts_trans
+plot_counts_normtrans
+```
 
 ## Breakfast
+
+```{r}
+plot_enrichment_down_sora
+plot_enrichment_down_tram
+```
 
 - Eat eggs
 - Drink coffee
