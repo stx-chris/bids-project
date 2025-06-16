@@ -1,11 +1,16 @@
 ---
-title: "BIDS Projekt - G3"
+title: BIDS Projekt
+subtitle: Gruppe 3
 author:
   - Constanze Leichtweiß
   - Ivanna Marchesini
   - Christoph Kovacs
   - Enrico Wondra
-format: revealjs
+format: 
+  revealjs:
+    footer: Gruppe 3
+    theme: sky
+lang: de
 #format: pptx
 ---
 
