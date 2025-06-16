@@ -6,6 +6,7 @@ author:
   - Christoph Kovacs
   - Enrico Wondra
 format: revealjs
+#format: pptx
 ---
 
 ```{r}
