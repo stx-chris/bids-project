@@ -459,6 +459,37 @@ plot_tsna
 # Sorafenib bildet einen Cluster deutlich abseits der Kontrollgruppe und von Trametinib, das kann als Indikator für einen qualitativen Unterschied gewertet werden
 ```
 
+*** UMAP ***
+```{r}
+if (!require("umap", quietly = TRUE))
+  install.packages("umap")
+
+library(umap)
+
+# Prepare expression matrix: genes in columns, samples in rows
+mat <- t(assay(rld))  # transpose to samples × genes
+
+# (Optional) Reduce to top 500 most variable genes
+top_var_genes <- head(order(apply(mat, 2, var), decreasing = TRUE), 500)
+mat_top <- mat[, top_var_genes]
+
+# Run UMAP
+set.seed(42)  # for reproducibility
+umap_result <- umap(mat_top, n_neighbors = 5)
+
+# Prepare data frame for ggplot2
+umap_df <- as.data.frame(umap_result$layout)
+umap_df$group <- colData(rld)$group  # replace with correct metadata field
+umap_df$sample <- rownames(umap_df)
+
+# Plot
+ggplot(umap_df, aes(x = V1, y = V2, color = group, label = sample)) +
+  geom_point(size = 3) +
+  geom_text(vjust = -1, size = 3) +
+  labs(title = "UMAP of RNA-seq samples", x = "UMAP1", y = "UMAP2") +
+  theme_minimal()
+```
+
 ## Differentielle Expressions Analyse
 
 Um die DEG-Analyse durchzuführen müssen wir noch definieren an welchen tatsächlichen Vergleichen wir interessiert sind. Dazu können wir uns eine sog. [Kontrast-Matrix](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#contrasts) erstellen. Folgende Vergleiche sind für uns interessant:
@@ -873,9 +904,9 @@ top_enrichment_plot <- function(ds, title) {
     theme_minimal())
 }
 
-enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-plot_enrichment_up_sora <- top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
-plot_enrichment_up_sora
+  enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
+  plot_enrichment_up_sora <- top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
+  plot_enrichment_up_sora
 ## Interpretation (KI-unterstützt)
 ## ==============
 ## Die Behandlung mit Sorafenib führt zu einer signifikanten Hochregulation von Genen, die mit dem Zelltod (Apoptosis, p53), zellulärem Stress (zB Uv-Antwort), Immunantwort (Interferon Gamma) und Stoffwechselprozessen (Adipogenese, Häm- und Peroxisomenstoffwechsel) assoziiert sind. Dies unterstützt die bekannte cytotoxische und wachstumshemmende Wirkung von Sorafenib auf zellulärer Ebene.
