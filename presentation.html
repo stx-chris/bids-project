@@ -124,6 +124,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="presentation_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="presentation_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="presentation_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -162,31 +165,41 @@ Enrico Wondra
 <h1>In the morning</h1>
 
 </section>
+<section id="wirkungsweise" class="slide level2">
+<h2>Wirkungsweise</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
+    RAS["RAS (GTPase)"]
+    RAF["RAF-Kinase (inkl. BRAF)"]
+    MEK["MEK1/2-Kinase"]
+    ERK["ERK1/2-Kinase"]
+    Prolif["Zellproliferation und Überleben"]
+
+    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; Prolif
+
+    SORA["Sorafenib (RAF-Hemmer)"] -.-&gt; RAF
+    TRAM["Trametinib (MEK-Hemmer)"] -.-&gt; MEK
+
+    style SORA fill:#fdd835,stroke:#f57f17,stroke-width:2px
+    style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
 <section id="getting-up" class="slide level2">
 <h2>Getting up</h2>
 <ul>
 <li>Turn off alarm</li>
 <li>Get out of bed</li>
 </ul>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-2-2.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="breakfast" class="slide level2">
-<h2>Breakfast</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -203,6 +216,25 @@ Enrico Wondra
 </div>
 </div>
 </div>
+</section>
+<section id="breakfast" class="slide level2">
+<h2>Breakfast</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-4-2.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
 <li>Eat eggs</li>
 <li>Drink coffee</li>
@@ -213,21 +245,15 @@ Enrico Wondra
 <h1>In the evening</h1>
 
 </section>
-<section id="dinner" class="slide level2">
-<h2>Dinner</h2>
-<ul>
-<li>Eat spaghetti</li>
-<li>Drink wine</li>
-</ul>
-</section>
-<section id="going-to-sleep" class="slide level2">
-<h2>Going to sleep</h2>
-<ul>
-<li>Get in bed</li>
-<li>Count sheep</li>
-</ul>
+<section id="sorafenib" class="slide level2">
+<h2>Sorafenib</h2>
 
-</section></section>
+<img data-src="images/paste-3.png" class="r-stretch"></section>
+<section id="trametinib" class="slide level2">
+<h2>Trametinib</h2>
+
+
+<img data-src="images/paste-5.png" class="r-stretch"></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -409,9 +435,9 @@ Enrico Wondra
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: '100%',
 
-        height: 700,
+        height: '100%',
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,

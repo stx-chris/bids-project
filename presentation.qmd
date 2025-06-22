@@ -10,6 +10,8 @@ format:
   revealjs:
     footer: Gruppe 3
     theme: sky
+    height: 100%
+    width: 100%
 lang: de
 #format: pptx
 ---
@@ -20,10 +22,30 @@ load("session.RData")
 
 # In the morning
 
+## Wirkungsweise
+```{mermaid}
+flowchart TD
+    RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
+    RAS["RAS (GTPase)"]
+    RAF["RAF-Kinase (inkl. BRAF)"]
+    MEK["MEK1/2-Kinase"]
+    ERK["ERK1/2-Kinase"]
+    Prolif["Zellproliferation und Überleben"]
+
+    RTK --> RAS --> RAF --> MEK --> ERK --> Prolif
+
+    SORA["Sorafenib (RAF-Hemmer)"] -.-> RAF
+    TRAM["Trametinib (MEK-Hemmer)"] -.-> MEK
+
+    style SORA fill:#fdd835,stroke:#f57f17,stroke-width:2px
+    style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px
+```
+
 ## Getting up
 
-- Turn off alarm
-- Get out of bed
+-   Turn off alarm
+-   Get out of bed
+
 ```{r}
 plot_counts_trans
 plot_counts_normtrans
@@ -36,17 +58,15 @@ plot_enrichment_down_sora
 plot_enrichment_down_tram
 ```
 
-- Eat eggs
-- Drink coffee
+-   Eat eggs
+-   Drink coffee
 
 # In the evening
 
-## Dinner
+## Sorafenib
 
-- Eat spaghetti
-- Drink wine
+![](images/paste-3.png)
 
-## Going to sleep
+## Trametinib
 
-- Get in bed
-- Count sheep
+![](images/paste-5.png)

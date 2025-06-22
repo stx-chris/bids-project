@@ -558,8 +558,9 @@ tram_counts$Comparison <- "Trametinib vs DMSO"
 all_counts <- bind_rows(sora_counts, tram_counts)
 
 plot_deg <- ggplot(all_counts, aes(x = Comparison, y = n, fill = Regulation)) +
-  geom_bar(stat = "identity", position = "dodge") +
+  geom_bar(stat = "identity", position = "stack") +
   labs(title = "Differenziell regulierte Gene", y = "Anzahl Gene") +
+  coord_flip() +
   theme_minimal()
 plot_deg
  
