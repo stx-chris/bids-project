@@ -12,17 +12,27 @@ format:
     theme: sky
     height: 100%
     width: 100%
+    slide-number: true
+    show-slide-number: all
+    smaller: true
+    scrollable: true
 lang: de
-#format: pptx
+execute:
+  cache: false
+
+format: pptx
 ---
 
 ```{r}
+#| cache: false
 load("session.RData")
 ```
 
-# In the morning
+# Intro<br>[Ivanna, Enrico]
 
-## Wirkungsweise
+## Überblick [Ivanna]
+
+## Wirkungsweise [Enrico]
 ```{mermaid}
 flowchart TD
     RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
@@ -41,32 +51,98 @@ flowchart TD
     style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px
 ```
 
-## Getting up
 
--   Turn off alarm
--   Get out of bed
+# DGE:<br>Differentielle Gen-Expressions Analyse<br>[Constanze]
+
+## Set 1
 
 ```{r}
 plot_counts_trans
 plot_counts_normtrans
 ```
 
-## Breakfast
+## Set 2
 
 ```{r}
 plot_enrichment_down_sora
 plot_enrichment_down_tram
 ```
 
--   Eat eggs
--   Drink coffee
+## Group Separability [Chris]
 
-# In the evening
+##
+::: {.panel-tabset}
 
-## Sorafenib
+### Scree Plot
+**Optimale Anzahl Komponenten für PCA**
+::: {.no-stretch}
+```{r}
+plot_scree
+```
+- Nur Top 500 Gene miteinbezogen
+- 2-3 Komponenten optimal
+:::
 
-![](images/paste-3.png)
+### 2D-PCA
+```{r}
+plot_pca_2d
+```
+- Klare Separierbarkeit entlang PC1
+- Stabile Kontrollgruppe
+- Sora deutlich von DMSO unterschieden
+- Tram mit In-Sample Unterschieden (PC2)
+- Problem: Misst nur linearen Zusammenhang
 
-## Trametinib
+### 3D-PCA
+```{r}
+plot_pca_3d
+```
+- PC3 erklärt nur knapp 7% der Gesamtvarianz
+- Keine bessere Separabilität
 
-![](images/paste-5.png)
+### t-SNA
+**t-distributed Stochastic Neighbor Embedding**
+```{r}
+plot_tsna
+```
+- Misst lokalen nicht-linearen Zusammenhang
+- Deutliche Cluster der drei Treatments
+- Trametinib kohärenter als bei PCA
+
+### UMAP
+**Uniform Manifold Approximation and Projection**
+```{r}
+plot_umap
+```
+- Misst lokalen und globalen Zusammenhang
+- "Gradientenstruktur" DMSO → Tram → Sora
+- Problem: Zu wenige Samples
+
+:::
+
+# GSE: Gene-set Enrichment Analysis<br>[Chris, Constanze]
+
+## Übersicht [Chris]
+::: {.no-stretch}
+```{r}
+plot_deg
+```
+:::
+- Sorafenib ca. 3500 hoch- und runterregulierte Gene
+- Trametinib nur ca. 800
+
+## Hochregulierte Gene [Constanze]
+- Up-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?
+
+## Runterregulierte Gene [Constanze]
+- Down-Regulated genes Plot  (Sora, Tram, Together?)
+
+
+# Gene Ontology (GO) and KEGG Pathway analysis<br>[Ivanna, Enrico]
+
+## Hallmark
+
+
+# Summary [Ivanna]
+
+- Variant Calling

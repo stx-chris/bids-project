@@ -376,26 +376,92 @@ Bevor wir mit der tatsächlichen DEG-Analyse fortfahren berechnen wir eine PCA u
 **Erstellt eine PCA und stellt diese als Abbildung im HTML Dokument dar.**
 
 ```{r}
+## Scree Plot
+mat <- assay(rld) 
+
+# Select top 500 variable genes
+top500 <- head(order(rowVars(mat), decreasing = TRUE), 500)
+pca_res <- prcomp(t(mat[top500, ]), center = TRUE, scale. = FALSE) # make sure scaling does not distort low-expressed changes
+# Calculate proportion of variance
+pca_var <- pca_res$sdev^2
+pca_var_exp <- pca_var / sum(pca_var)
+
+df <- data.frame(
+  PC = 1:20,
+  Cumulative = cumsum(pca_var_exp[1:20])
+)
+# Keep only PCs 1 to 6
+df <- df[df$PC <= 6, ]
+plot_scree <- ggplot(df, aes(x = PC, y = Cumulative)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.9, linetype = "dashed", color = "red") +
+  scale_x_continuous(breaks = 1:8) +  # No `limits` needed now
+  labs(
+    title = "Kumulativer Scree-Plot",
+    x = "Anzahl Komponenten",
+    y = "Kumulative erklärte Varianz"
+  ) +
+  theme_minimal()
+
+# Show it
+plot_scree
+
 ### PCA: Principal Component Analysis (linear relationship analysis)
+## 2D
 pca <- plotPCA(rld, intgroup = "group", returnData = TRUE)
 # Variance explained
 percentVar <- round(100 * attr(pca, "percentVar"))
 
 # Plot
-plot_pca <- ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
+plot_pca_2d <- ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
   geom_point(size = 3) +
   geom_text(vjust = -1.2, size = 3) +
   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   coord_fixed() +
   theme_minimal()
-plot_pca
+plot_pca_2d
 # Interpretation
 # ==============
 # PCA erklärt 87% der Gesamtvarianz in 2 Dimensionen
 # DMSO bildet einen Cluster, die Samples kann als (linear) homogen angenommen werden
 # Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
 # Trametinib bildet zwei Cluster, die Samples sind daher nicht (linear) homogen
+
+## 3D
+library(plotly)
+
+# Run PCA (no scaling, like plotPCA)
+pca <- prcomp(t(mat[top500, ]), center = TRUE, scale. = FALSE)
+
+# Get variance explained
+percentVar <- round(100 * (pca$sdev^2 / sum(pca$sdev^2)), 1)
+
+# Sample metadata (assuming 'group' is the treatment column)
+meta <- as.data.frame(colData(dds))
+
+# PCA scores
+pca_df <- as.data.frame(pca$x)
+pca_df$group <- meta$group
+pca_df$sample <- rownames(meta)
+
+# Plot
+plot_pca_3d <- plot_ly(
+  pca_df, x = ~PC1, y = ~PC2, z = ~PC3,
+  color = ~group, colors = "Set1",
+  text = ~paste("Sample:", sample),
+  type = "scatter3d", mode = "markers"
+) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = paste0("PC1 (", percentVar[1], "%)")),
+      yaxis = list(title = paste0("PC2 (", percentVar[2], "%)")),
+      zaxis = list(title = paste0("PC3 (", percentVar[3], "%)"))
+    ),
+    title = "3D PCA of RNA-Seq Samples"
+  )
+plot_pca_3d
 ```
 
 **MDS**
@@ -483,11 +549,12 @@ umap_df$group <- colData(rld)$group  # replace with correct metadata field
 umap_df$sample <- rownames(umap_df)
 
 # Plot
-ggplot(umap_df, aes(x = V1, y = V2, color = group, label = sample)) +
+plot_umap <- ggplot(umap_df, aes(x = V1, y = V2, color = group, label = sample)) +
   geom_point(size = 3) +
   geom_text(vjust = -1, size = 3) +
   labs(title = "UMAP of RNA-seq samples", x = "UMAP1", y = "UMAP2") +
   theme_minimal()
+plot_umap
 ```
 
 ## Differentielle Expressions Analyse
@@ -945,5 +1012,8 @@ plot_enrichment_down_tram
 ```{r}
 #| cache: false
 save.image(file = "session.RData")
+```
+
+```{r}
 sessionInfo()
 ```

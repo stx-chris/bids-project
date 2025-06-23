@@ -48,6 +48,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -127,6 +128,15 @@
   <script src="presentation_files/libs/quarto-diagram/mermaid.min.js"></script>
   <script src="presentation_files/libs/quarto-diagram/mermaid-init.js"></script>
   <link href="presentation_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+  <link href="presentation_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <script src="presentation_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="presentation_files/libs/plotly-binding-4.10.4/plotly.js"></script>
+  <script src="presentation_files/libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="presentation_files/libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="presentation_files/libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+  <script src="presentation_files/libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+  <link href="presentation_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="presentation_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -161,12 +171,15 @@ Enrico Wondra
 
 </section>
 <section>
-<section id="in-the-morning" class="title-slide slide level1 center">
-<h1>In the morning</h1>
+<section id="intro-ivanna-enrico" class="title-slide slide level1 center">
+<h1>Intro<br>[Ivanna, Enrico]</h1>
 
 </section>
-<section id="wirkungsweise" class="slide level2">
-<h2>Wirkungsweise</h2>
+<section id="überblick-ivanna" class="slide level2">
+<h2>Überblick [Ivanna]</h2>
+</section>
+<section id="wirkungsweise-enrico" class="slide level2">
+<h2>Wirkungsweise [Enrico]</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -193,13 +206,14 @@ Enrico Wondra
 </div>
 </div>
 </div>
+</section></section>
+<section>
+<section id="dge-differentielle-gen-expressions-analyse-constanze" class="title-slide slide level1 center">
+<h1>DGE:<br>Differentielle Gen-Expressions Analyse<br>[Constanze]</h1>
+
 </section>
-<section id="getting-up" class="slide level2">
-<h2>Getting up</h2>
-<ul>
-<li>Turn off alarm</li>
-<li>Get out of bed</li>
-</ul>
+<section id="set-1" class="slide level2">
+<h2>Set 1</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -217,8 +231,8 @@ Enrico Wondra
 </div>
 </div>
 </section>
-<section id="breakfast" class="slide level2">
-<h2>Breakfast</h2>
+<section id="set-2" class="slide level2">
+<h2>Set 2</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -235,25 +249,145 @@ Enrico Wondra
 </div>
 </div>
 </div>
+</section>
+<section id="group-separability-chris" class="slide level2">
+<h2>Group Separability [Chris]</h2>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Scree Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p><strong>Optimale Anzahl Komponenten für PCA</strong> ::: {.no-stretch}</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li>Eat eggs</li>
-<li>Drink coffee</li>
+<li>Nur Top 500 Gene miteinbezogen</li>
+<li>2-3 Komponenten optimal</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="d-pca">2D-PCA</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Klare Separierbarkeit entlang PC1</li>
+<li>Stabile Kontrollgruppe</li>
+<li>Sora deutlich von DMSO unterschieden</li>
+<li>Tram mit In-Sample Unterschieden (PC2)</li>
+<li>Problem: Misst nur linearen Zusammenhang</li>
+</ul>
+<h3 id="d-pca-1">3D-PCA</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-e8980251b4ee1bfbce5c" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e8980251b4ee1bfbce5c">{"x":{"visdat":{"8759b47dbe2":["function () ","plotlyVisDat"]},"cur_data":"8759b47dbe2","attrs":{"8759b47dbe2":{"x":{},"y":{},"z":{},"text":{},"mode":"markers","color":{},"colors":"Set1","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"PC1 (66%)"},"yaxis":{"title":"PC2 (20.9%)"},"zaxis":{"title":"PC3 (6.6%)"}},"title":"3D PCA of RNA-Seq Samples","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-8.5150211133900449,-7.834434882734695],"y":[1.9994614046429313,1.2232330609303004],"z":[1.7934294285020662,-3.3138133707163515],"text":["Sample: 1_DMSO_1","Sample: 2_DMSO_2"],"mode":"markers","type":"scatter3d","name":"DMSO","marker":{"color":"rgba(228,26,28,1)","line":{"color":"rgba(228,26,28,1)"}},"textfont":{"color":"rgba(228,26,28,1)"},"error_y":{"color":"rgba(228,26,28,1)"},"error_x":{"color":"rgba(228,26,28,1)"},"line":{"color":"rgba(228,26,28,1)"},"frame":null},{"x":[8.4329177240862361,8.3713336349977236],"y":[1.8036370539408706,2.1456914252847659],"z":[1.3831863816587411,-2.3606609280664825],"text":["Sample: 3_Sora_1","Sample: 4_Sora_2"],"mode":"markers","type":"scatter3d","name":"Sorafenib","marker":{"color":"rgba(55,126,184,1)","line":{"color":"rgba(55,126,184,1)"}},"textfont":{"color":"rgba(55,126,184,1)"},"error_y":{"color":"rgba(55,126,184,1)"},"error_x":{"color":"rgba(55,126,184,1)"},"line":{"color":"rgba(55,126,184,1)"},"frame":null},{"x":[-1.0590918523910982,0.60429648943187875],"y":[1.3402748455536655,-8.5122977903525197],"z":[2.4664291287956184,0.031429359826390418],"text":["Sample: 5_Tram_1","Sample: 6_Tram_2"],"mode":"markers","type":"scatter3d","name":"Trametinib","marker":{"color":"rgba(77,175,74,1)","line":{"color":"rgba(77,175,74,1)"}},"textfont":{"color":"rgba(77,175,74,1)"},"error_y":{"color":"rgba(77,175,74,1)"},"error_x":{"color":"rgba(77,175,74,1)"},"line":{"color":"rgba(77,175,74,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<ul>
+<li>PC3 erklärt nur knapp 7% der Gesamtvarianz</li>
+<li>Keine bessere Separabilität</li>
+</ul>
+<h3 id="t-sna">t-SNA</h3>
+<p><strong>t-distributed Stochastic Neighbor Embedding</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Misst lokalen nicht-linearen Zusammenhang</li>
+<li>Deutliche Cluster der drei Treatments</li>
+<li>Trametinib kohärenter als bei PCA</li>
+</ul>
+<h3 id="umap">UMAP</h3>
+<p><strong>Uniform Manifold Approximation and Projection</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Misst lokalen und globalen Zusammenhang</li>
+<li>“Gradientenstruktur” DMSO → Tram → Sora</li>
+<li>Problem: Zu wenige Samples</li>
+</ul>
+<p>:::</p>
+</section></section>
+<section>
+<section id="gse-gene-set-enrichment-analysis-chris-constanze" class="title-slide slide level1 center">
+<h1>GSE: Gene-set Enrichment Analysis<br>[Chris, Constanze]</h1>
+
+</section>
+<section id="übersicht-chris" class="slide level2">
+<h2>Übersicht [Chris]</h2>
+<div class="no-stretch">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>Sorafenib ca. 3500 hoch- und runterregulierte Gene</li>
+<li>Tramtinib nur ca. 800</li>
+</ul>
+</section>
+<section id="hochregulierte-gene-constanze" class="slide level2">
+<h2>Hochregulierte Gene [Constanze]</h2>
+<ul>
+<li>Up-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?</li>
+</ul>
+</section>
+<section id="runterregulierte-gene-constanze" class="slide level2">
+<h2>Runterregulierte Gene [Constanze]</h2>
+<ul>
+<li>Down-Regulated genes Plot (Sora, Tram, Together?)</li>
 </ul>
 </section></section>
 <section>
-<section id="in-the-evening" class="title-slide slide level1 center">
-<h1>In the evening</h1>
+<section id="gene-ontology-go-and-kegg-pathway-analysis-ivanna-enrico" class="title-slide slide level1 center">
+<h1>Gene Ontology (GO) and KEGG Pathway analysis<br>[Ivanna, Enrico]</h1>
 
 </section>
-<section id="sorafenib" class="slide level2">
-<h2>Sorafenib</h2>
+<section id="hallmark" class="slide level2">
+<h2>Hallmark</h2>
+</section></section>
+<section id="summary-ivanna" class="title-slide slide level1 center">
+<h1>Summary [Ivanna]</h1>
+<ul>
+<li>Variant Calling</li>
+</ul>
 
-<img data-src="images/paste-3.png" class="r-stretch"></section>
-<section id="trametinib" class="slide level2">
-<h2>Trametinib</h2>
-
-
-<img data-src="images/paste-5.png" class="r-stretch"></section></section>
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -290,7 +424,7 @@ Enrico Wondra
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'smaller': false,
+'smaller': true,
  
         // Display controls in the bottom right corner
         controls: false,
@@ -310,7 +444,7 @@ Enrico Wondra
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
