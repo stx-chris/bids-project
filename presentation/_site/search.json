@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "presentation.html#überblick-ivanna",
+    "href": "presentation.html#überblick-ivanna",
+    "title": "BIDS Projekt",
+    "section": "Überblick [Ivanna]",
+    "text": "Überblick [Ivanna]"
+  },
+  {
+    "objectID": "presentation.html#wirkungsweise-enrico",
+    "href": "presentation.html#wirkungsweise-enrico",
+    "title": "BIDS Projekt",
+    "section": "Wirkungsweise [Enrico]",
+    "text": "Wirkungsweise [Enrico]\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    Prolif[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; Prolif\n\n    SORA[\"Sorafenib (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"Trametinib (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:#fdd835,stroke:#f57f17,stroke-width:2px\n    style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px"
+  },
+  {
+    "objectID": "presentation.html#set-1",
+    "href": "presentation.html#set-1",
+    "title": "BIDS Projekt",
+    "section": "Set 1",
+    "text": "Set 1"
+  },
+  {
+    "objectID": "presentation.html#set-2",
+    "href": "presentation.html#set-2",
+    "title": "BIDS Projekt",
+    "section": "Set 2",
+    "text": "Set 2"
+  },
+  {
+    "objectID": "presentation.html#group-separability-chris",
+    "href": "presentation.html#group-separability-chris",
+    "title": "BIDS Projekt",
+    "section": "Group Separability [Chris]",
+    "text": "Group Separability [Chris]"
+  },
+  {
+    "objectID": "presentation.html#section",
+    "href": "presentation.html#section",
+    "title": "BIDS Projekt",
+    "section": "",
+    "text": "Scree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram mit In-Sample Unterschieden (PC2)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples"
+  },
+  {
+    "objectID": "presentation.html#übersicht-chris",
+    "href": "presentation.html#übersicht-chris",
+    "title": "BIDS Projekt",
+    "section": "Übersicht [Chris]",
+    "text": "Übersicht [Chris]\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800"
+  },
+  {
+    "objectID": "presentation.html#hochregulierte-gene-constanze",
+    "href": "presentation.html#hochregulierte-gene-constanze",
+    "title": "BIDS Projekt",
+    "section": "Hochregulierte Gene [Constanze]",
+    "text": "Hochregulierte Gene [Constanze]\n\nUp-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?"
+  },
+  {
+    "objectID": "presentation.html#runterregulierte-gene-constanze",
+    "href": "presentation.html#runterregulierte-gene-constanze",
+    "title": "BIDS Projekt",
+    "section": "Runterregulierte Gene [Constanze]",
+    "text": "Runterregulierte Gene [Constanze]\n\nDown-Regulated genes Plot (Sora, Tram, Together?)"
+  },
+  {
+    "objectID": "presentation.html#hallmark",
+    "href": "presentation.html#hallmark",
+    "title": "BIDS Projekt",
+    "section": "Hallmark",
+    "text": "Hallmark"
+  }
+]
