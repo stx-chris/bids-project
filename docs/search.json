@@ -1,362 +1,5 @@
 [
   {
-    "objectID": "index.html#überblick-ivanna",
-    "href": "index.html#überblick-ivanna",
-    "title": "BIDS Projekt",
-    "section": "Überblick [Ivanna]",
-    "text": "Überblick [Ivanna]"
-  },
-  {
-    "objectID": "index.html#wirkungsweise-enrico",
-    "href": "index.html#wirkungsweise-enrico",
-    "title": "BIDS Projekt",
-    "section": "Wirkungsweise [Enrico]",
-    "text": "Wirkungsweise [Enrico]\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px"
-  },
-  {
-    "objectID": "index.html#set-1",
-    "href": "index.html#set-1",
-    "title": "BIDS Projekt",
-    "section": "Set 1",
-    "text": "Set 1"
-  },
-  {
-    "objectID": "index.html#set-2",
-    "href": "index.html#set-2",
-    "title": "BIDS Projekt",
-    "section": "Set 2",
-    "text": "Set 2"
-  },
-  {
-    "objectID": "index.html#group-separability-chris",
-    "href": "index.html#group-separability-chris",
-    "title": "BIDS Projekt",
-    "section": "Group Separability [Chris]",
-    "text": "Group Separability [Chris]"
-  },
-  {
-    "objectID": "index.html#section",
-    "href": "index.html#section",
-    "title": "BIDS Projekt",
-    "section": "",
-    "text": "Scree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram mit In-Sample Unterschieden (PC2)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples"
-  },
-  {
-    "objectID": "index.html#übersicht-chris",
-    "href": "index.html#übersicht-chris",
-    "title": "BIDS Projekt",
-    "section": "Übersicht [Chris]",
-    "text": "Übersicht [Chris]"
-  },
-  {
-    "objectID": "index.html#hochregulierte-gene-constanze",
-    "href": "index.html#hochregulierte-gene-constanze",
-    "title": "BIDS Projekt",
-    "section": "Hochregulierte Gene [Constanze]",
-    "text": "Hochregulierte Gene [Constanze]\n\nUp-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?"
-  },
-  {
-    "objectID": "index.html#runterregulierte-gene-constanze",
-    "href": "index.html#runterregulierte-gene-constanze",
-    "title": "BIDS Projekt",
-    "section": "Runterregulierte Gene [Constanze]",
-    "text": "Runterregulierte Gene [Constanze]\n\nDown-Regulated genes Plot (Sora, Tram, Together?)"
-  },
-  {
-    "objectID": "index.html#hallmark",
-    "href": "index.html#hallmark",
-    "title": "BIDS Projekt",
-    "section": "Hallmark",
-    "text": "Hallmark"
-  },
-  {
-    "objectID": "index.html#ziel-unterschiede-in-der-genexpression-finden",
-    "href": "index.html#ziel-unterschiede-in-der-genexpression-finden",
-    "title": "BIDS Projekt",
-    "section": "Ziel:Unterschiede in der Genexpression finden",
-    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\n\n\nConstanze"
-  },
-  {
-    "objectID": "index.html#code",
-    "href": "index.html#code",
-    "title": "BIDS Projekt",
-    "section": "Code",
-    "text": "Code\n\n# Filter\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # 18,198 Records behalten\nsum(dim(count_matrix)[1]-sum(keep)) # 39,575 Records entfernen"
-  },
-  {
-    "objectID": "index.html#resultate",
-    "href": "index.html#resultate",
-    "title": "BIDS Projekt",
-    "section": "Resultate",
-    "text": "Resultate"
-  },
-  {
-    "objectID": "index.html#enrichments",
-    "href": "index.html#enrichments",
-    "title": "BIDS Projekt",
-    "section": "Enrichments",
-    "text": "Enrichments"
-  },
-  {
-    "objectID": "index.html#daten-vor-und-nach-normalisierung",
-    "href": "index.html#daten-vor-und-nach-normalisierung",
-    "title": "BIDS Projekt",
-    "section": "Daten vor und nach Normalisierung",
-    "text": "Daten vor und nach Normalisierung\n\nNur transformiertTransformiert und normalisiert"
-  },
-  {
-    "objectID": "index.html#daten-vor-und-nach-normalisierung-1",
-    "href": "index.html#daten-vor-und-nach-normalisierung-1",
-    "title": "BIDS Projekt",
-    "section": "Daten vor und nach Normalisierung",
-    "text": "Daten vor und nach Normalisierung"
-  },
-  {
-    "objectID": "index.html#signifikant-regulierte-gene",
-    "href": "index.html#signifikant-regulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Signifikant regulierte Gene",
-    "text": "Signifikant regulierte Gene\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800\n\n\nConstanze"
-  },
-  {
-    "objectID": "index.html#ziel-unterschiede-in-der-genexpression-finden-constanze",
-    "href": "index.html#ziel-unterschiede-in-der-genexpression-finden-constanze",
-    "title": "BIDS Projekt",
-    "section": "Ziel:Unterschiede in der Genexpression finden [Constanze]",
-    "text": "Ziel:Unterschiede in der Genexpression finden [Constanze]\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)"
-  },
-  {
-    "objectID": "index.html#vorbereitung-constanze",
-    "href": "index.html#vorbereitung-constanze",
-    "title": "BIDS Projekt",
-    "section": "Vorbereitung [Constanze]",
-    "text": "Vorbereitung [Constanze]\n\nErstellen einer Count-Matrix\nFiltern der Daten\n\n\n# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt\n\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # Behalte 18,198 Records für die Analyse (31%)\nsum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)\n\n\nErstellen des DeSeq2-Objekts\nNormalisierung der Beobachtungen"
-  },
-  {
-    "objectID": "index.html#signifikant-regulierte-gene-chris",
-    "href": "index.html#signifikant-regulierte-gene-chris",
-    "title": "BIDS Projekt",
-    "section": "Signifikant regulierte Gene [Chris]",
-    "text": "Signifikant regulierte Gene [Chris]\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800"
-  },
-  {
-    "objectID": "index.html#hochregulierte-gene",
-    "href": "index.html#hochregulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Hochregulierte Gene",
-    "text": "Hochregulierte Gene"
-  },
-  {
-    "objectID": "index.html#runterregulierte-gene",
-    "href": "index.html#runterregulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Runterregulierte Gene",
-    "text": "Runterregulierte Gene"
-  },
-  {
-    "objectID": "index.html#enrichment",
-    "href": "index.html#enrichment",
-    "title": "BIDS Projekt",
-    "section": "Enrichment",
-    "text": "Enrichment"
-  },
-  {
-    "objectID": "index.html#herunterregulierte-gene",
-    "href": "index.html#herunterregulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Herunterregulierte Gene",
-    "text": "Herunterregulierte Gene"
-  },
-  {
-    "objectID": "index.html#gemeinsam-hochregulierte-gene",
-    "href": "index.html#gemeinsam-hochregulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Gemeinsam hochregulierte Gene",
-    "text": "Gemeinsam hochregulierte Gene"
-  },
-  {
-    "objectID": "index.html#gemeinsam-herunterregulierte-gene",
-    "href": "index.html#gemeinsam-herunterregulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Gemeinsam herunterregulierte Gene",
-    "text": "Gemeinsam herunterregulierte Gene"
-  },
-  {
-    "objectID": "index.html#sorafenib",
-    "href": "index.html#sorafenib",
-    "title": "BIDS Projekt",
-    "section": "Sorafenib",
-    "text": "Sorafenib"
-  },
-  {
-    "objectID": "index.html#trametinib",
-    "href": "index.html#trametinib",
-    "title": "BIDS Projekt",
-    "section": "Trametinib",
-    "text": "Trametinib"
-  },
-  {
-    "objectID": "index.html#hochreguliert-pathways",
-    "href": "index.html#hochreguliert-pathways",
-    "title": "BIDS Projekt",
-    "section": "Hochreguliert + Pathways",
-    "text": "Hochreguliert + Pathways\n\nTop 10 hochreguliertDot-Plot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n::::"
-  },
-  {
-    "objectID": "index.html#herunterreguliert-pathways",
-    "href": "index.html#herunterreguliert-pathways",
-    "title": "BIDS Projekt",
-    "section": "Herunterreguliert + Pathways",
-    "text": "Herunterreguliert + Pathways"
-  },
-  {
-    "objectID": "index.html#signalwege-hochreguliert",
-    "href": "index.html#signalwege-hochreguliert",
-    "title": "BIDS Projekt",
-    "section": "Signalwege, hochreguliert",
-    "text": "Signalwege, hochreguliert\n\n\nTop 10Dot-Plot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
-  },
-  {
-    "objectID": "index.html#signalwege-herunterreguliert",
-    "href": "index.html#signalwege-herunterreguliert",
-    "title": "BIDS Projekt",
-    "section": "Signalwege, herunterreguliert",
-    "text": "Signalwege, herunterreguliert\n\n\nTop 10Dot-Plot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
-  },
-  {
-    "objectID": "index.html#volcano-plots",
-    "href": "index.html#volcano-plots",
-    "title": "BIDS Projekt",
-    "section": "Volcano Plots",
-    "text": "Volcano Plots\n\nSorafenibTrametinib"
-  },
-  {
-    "objectID": "index.html#gemeinsam-regulierte-gene",
-    "href": "index.html#gemeinsam-regulierte-gene",
-    "title": "BIDS Projekt",
-    "section": "Gemeinsam regulierte Gene",
-    "text": "Gemeinsam regulierte Gene\n\n\nHochreguliertHerunterreguliert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConstanze"
-  },
-  {
-    "objectID": "index.html#identifikation-einzelner-gene",
-    "href": "index.html#identifikation-einzelner-gene",
-    "title": "BIDS Projekt",
-    "section": "Identifikation einzelner Gene",
-    "text": "Identifikation einzelner Gene\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung/Apoptose/Differenzierung\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Tumorwachstumsmechanismen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ BMF, CYP1A, ASCL2zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung"
-  },
-  {
-    "objectID": "index.html#signifikanz-einzelner-gene",
-    "href": "index.html#signifikanz-einzelner-gene",
-    "title": "BIDS Projekt",
-    "section": "Signifikanz einzelner Gene",
-    "text": "Signifikanz einzelner Gene\n\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung, Apoptose, Differenzierung\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Tumorwachstumsmechanismen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ BMF, CYP1A, ASCL2Zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung\n\n\n\n\n\nChris"
-  },
-  {
-    "objectID": "index.html#count-daten",
-    "href": "index.html#count-daten",
-    "title": "BIDS Projekt",
-    "section": "Count-Daten",
-    "text": "Count-Daten\n\n\nNur transformiertTransformiert und normalisiert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConstanze"
-  },
-  {
-    "objectID": "index.html#count-daten-constanze",
-    "href": "index.html#count-daten-constanze",
-    "title": "BIDS Projekt",
-    "section": "Count-Daten [Constanze]",
-    "text": "Count-Daten [Constanze]\n\nNur transformiertTransformiert und normalisiert"
-  },
-  {
-    "objectID": "index.html#explorative-analyse-chris",
-    "href": "index.html#explorative-analyse-chris",
-    "title": "BIDS Projekt",
-    "section": "Explorative Analyse [Chris]",
-    "text": "Explorative Analyse [Chris]\n\nScree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram mit In-Sample Unterschieden (PC2)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples"
-  },
-  {
-    "objectID": "index.html#strukturfindung",
-    "href": "index.html#strukturfindung",
-    "title": "BIDS Projekt",
-    "section": "Strukturfindung",
-    "text": "Strukturfindung\n\n\nScree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram mit In-Sample Unterschieden (PC2)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples\n\n\n\n\n\nChris"
-  },
-  {
-    "objectID": "index.html#signifikant-regulierte-gene-constanze",
-    "href": "index.html#signifikant-regulierte-gene-constanze",
-    "title": "BIDS Projekt",
-    "section": "Signifikant regulierte Gene [Constanze]",
-    "text": "Signifikant regulierte Gene [Constanze]\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800"
-  },
-  {
-    "objectID": "index.html#gemeinsam-regulierte-gene-chris",
-    "href": "index.html#gemeinsam-regulierte-gene-chris",
-    "title": "BIDS Projekt",
-    "section": "Gemeinsam regulierte Gene [Chris]",
-    "text": "Gemeinsam regulierte Gene [Chris]\n\nHochreguliertHerunterreguliert"
-  },
-  {
-    "objectID": "index.html#signifikanz-einzelner-gene-chris",
-    "href": "index.html#signifikanz-einzelner-gene-chris",
-    "title": "BIDS Projekt",
-    "section": "Signifikanz einzelner Gene [Chris]",
-    "text": "Signifikanz einzelner Gene [Chris]\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung/Apoptose/Differenzierung\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Tumorwachstumsmechanismen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ BMF, CYP1A, ASCL2Zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung"
-  },
-  {
-    "objectID": "index.html#überblick-iv",
-    "href": "index.html#überblick-iv",
-    "title": "BIDS Projekt",
-    "section": "Überblick [Iv]",
-    "text": "Überblick [Iv]"
-  },
-  {
-    "objectID": "index.html#wirkungsweise-en",
-    "href": "index.html#wirkungsweise-en",
-    "title": "BIDS Projekt",
-    "section": "Wirkungsweise [En]",
-    "text": "Wirkungsweise [En]\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px"
-  },
-  {
-    "objectID": "index.html#ziel-unterschiede-in-der-genexpression-finden-co",
-    "href": "index.html#ziel-unterschiede-in-der-genexpression-finden-co",
-    "title": "BIDS Projekt",
-    "section": "Ziel:Unterschiede in der Genexpression finden [Co]",
-    "text": "Ziel:Unterschiede in der Genexpression finden [Co]\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\n\n\nConstanze, 1 min"
-  },
-  {
-    "objectID": "index.html#vorbereitung-co",
-    "href": "index.html#vorbereitung-co",
-    "title": "BIDS Projekt",
-    "section": "Vorbereitung [Co]",
-    "text": "Vorbereitung [Co]\n\nErstellen einer Count-Matrix\nFiltern der Daten\n\n\n# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt\n\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # Behalte 18,198 Records für die Analyse (31%)\nsum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)\n\n\nErstellen des DeSeq2-Objekts\nNormalisierung der Beobachtungen"
-  },
-  {
-    "objectID": "index.html#count-daten-co",
-    "href": "index.html#count-daten-co",
-    "title": "BIDS Projekt",
-    "section": "Count-Daten [Co]",
-    "text": "Count-Daten [Co]\n\nNur transformiertTransformiert und normalisiert"
-  },
-  {
-    "objectID": "index.html#signifikant-regulierte-gene-co",
-    "href": "index.html#signifikant-regulierte-gene-co",
-    "title": "BIDS Projekt",
-    "section": "Signifikant regulierte Gene [Co]",
-    "text": "Signifikant regulierte Gene [Co]\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800\n\n\nConstanze"
-  },
-  {
-    "objectID": "index.html#gemeinsam-regulierte-gene-co",
-    "href": "index.html#gemeinsam-regulierte-gene-co",
-    "title": "BIDS Projekt",
-    "section": "Gemeinsam regulierte Gene [Co]",
-    "text": "Gemeinsam regulierte Gene [Co]\n\nHochreguliertHerunterreguliert"
-  },
-  {
-    "objectID": "index.html#signifikanz-einzelner-gene-ch",
-    "href": "index.html#signifikanz-einzelner-gene-ch",
-    "title": "BIDS Projekt",
-    "section": "Signifikanz einzelner Gene [Ch]",
-    "text": "Signifikanz einzelner Gene [Ch]\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung, Apoptose, Differenzierung\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Tumorwachstumsmechanismen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ BMF, CYP1A, ASCL2Zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung"
-  },
-  {
     "objectID": "index.html#überblick",
     "href": "index.html#überblick",
     "title": "BIDS Projekt",
@@ -371,11 +14,67 @@
     "text": "Wirkungsweise\n\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px\n\n\n\n\n\n\n\nEnrico"
   },
   {
+    "objectID": "index.html#ziel-unterschiede-in-der-genexpression-finden",
+    "href": "index.html#ziel-unterschiede-in-der-genexpression-finden",
+    "title": "BIDS Projekt",
+    "section": "Ziel:Unterschiede in der Genexpression finden",
+    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\n\n\nConstanze"
+  },
+  {
     "objectID": "index.html#vorbereitung",
     "href": "index.html#vorbereitung",
     "title": "BIDS Projekt",
     "section": "Vorbereitung",
-    "text": "Vorbereitung\n\n\nErstellen einer Count-Matrix\nFiltern der Daten\n\n\n# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt\n\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # Behalte 18,198 Records für die Analyse (31%)\nsum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)\n\n\nErstellen des DeSeq2-Objekts\nNormalisierung der Beobachtungen\n\n\nConstanze"
+    "text": "Vorbereitung\n\n\nErstellen einer Count-Matrix\nFiltern der Daten\n\n\n# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt\n\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # Behalte 18,198 Records für die Analyse (31%)\nsum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)\n\n\nErstellen des DeSeq2-Objekts\nTransformieren und Normalisieren der Beobachtungen\n\n\nConstanze"
+  },
+  {
+    "objectID": "index.html#count-daten",
+    "href": "index.html#count-daten",
+    "title": "BIDS Projekt",
+    "section": "Count-Daten",
+    "text": "Count-Daten\n\n\nNur transformiertTransformiert und normalisiert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConstanze"
+  },
+  {
+    "objectID": "index.html#strukturfindung",
+    "href": "index.html#strukturfindung",
+    "title": "BIDS Projekt",
+    "section": "Strukturfindung",
+    "text": "Strukturfindung\n\n\nScree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram mit In-Sample Unterschieden (PC2)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples\n\n\n\n\n\nChris"
+  },
+  {
+    "objectID": "index.html#signifikant-regulierte-gene",
+    "href": "index.html#signifikant-regulierte-gene",
+    "title": "BIDS Projekt",
+    "section": "Signifikant regulierte Gene",
+    "text": "Signifikant regulierte Gene\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800\n\n\nConstanze"
+  },
+  {
+    "objectID": "index.html#gemeinsam-regulierte-gene",
+    "href": "index.html#gemeinsam-regulierte-gene",
+    "title": "BIDS Projekt",
+    "section": "Gemeinsam regulierte Gene",
+    "text": "Gemeinsam regulierte Gene\n\n\nHochreguliertHerunterreguliert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConstanze"
+  },
+  {
+    "objectID": "index.html#signifikanz-einzelner-gene",
+    "href": "index.html#signifikanz-einzelner-gene",
+    "title": "BIDS Projekt",
+    "section": "Signifikanz einzelner Gene",
+    "text": "Signifikanz einzelner Gene\n\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung, Apoptose, Differenzierung\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Tumorwachstumsmechanismen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑↑ BMF, CYP1A, ASCL2Zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung\n\n\n\n\n\nChris"
+  },
+  {
+    "objectID": "index.html#signalwege-hochreguliert",
+    "href": "index.html#signalwege-hochreguliert",
+    "title": "BIDS Projekt",
+    "section": "Signalwege, hochreguliert",
+    "text": "Signalwege, hochreguliert\n\n\nTop 10Dot-Plot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
+  },
+  {
+    "objectID": "index.html#signalwege-herunterreguliert",
+    "href": "index.html#signalwege-herunterreguliert",
+    "title": "BIDS Projekt",
+    "section": "Signalwege, herunterreguliert",
+    "text": "Signalwege, herunterreguliert\n\n\nTop 10Dot-Plot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
   },
   {
     "objectID": "index.html#variant-calling",
