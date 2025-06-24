@@ -19,7 +19,7 @@ format:
     show-slide-number: all
     smaller: true
     scrollable: true
-    embed-resources: false
+    embed-resources: true
 lang: de
 
 
