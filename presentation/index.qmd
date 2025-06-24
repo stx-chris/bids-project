@@ -18,12 +18,21 @@ library(UpSetR)
 
 # Einführung
 
-## Überblick
+## Sample Vorbereitung
 ::: aside
 Ivanna
 :::
+::: no-stretch
+![](../images/intro1.jpg){width=70% fig-align="center"}
+:::
 
-## Wirkungsweise
+## RNA-Seq Pipeline
+::: no-stretch
+![](../images/intro2.jpg){width=100% fig-align="center"}
+:::
+
+## Wirkungsweise {.center}
+
 ::: aside
 Enrico
 :::
@@ -49,6 +58,7 @@ flowchart TD
 # Analyse
 
 ## Ziel:<br>Unterschiede in der Genexpression finden
+
 ::: aside
 Constanze
 :::
@@ -63,7 +73,10 @@ Constanze
 
 -   Logarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)
 
+-   Ergänzung zum log2FoldChange?
+
 ## Vorbereitung
+
 ::: aside
 Constanze
 :::
@@ -85,24 +98,29 @@ sum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)
 -   Transformieren und Normalisieren der Beobachtungen
 
 ## Count-Daten
+
 ::: aside
 Constanze
 :::
 
-:::: panel-tabset
+::: panel-tabset
 ### Nur transformiert
+
 ```{r}
 plot_counts_trans
 ```
+
 ### Transformiert und normalisiert
+
 ```{r}
 plot_counts_normtrans
 ```
-::::
+:::
 
 # Explorative Analyse
 
 ## Strukturfindung
+
 ::: aside
 Chris
 :::
@@ -170,6 +188,7 @@ plot_umap
 # Differenzielle Expressions Analyse (DEG)
 
 ## Signifikant regulierte Gene
+
 ::: aside
 Constanze
 :::
@@ -179,17 +198,20 @@ Constanze
 plot_deg
 ```
 :::
+
 -   Sorafenib ca. 3500 hoch- und runterregulierte Gene
 -   Trametinib nur ca. 800
 
 ## Gemeinsam regulierte Gene
+
 ::: aside
 Constanze
 :::
 
-:::: panel-tabset
+::::: panel-tabset
 ### Hochreguliert
-::: {.no-stretch}
+
+::: no-stretch
 ```{r}
 upset(fromList(up_list), 
       order.by = "freq",
@@ -197,8 +219,10 @@ upset(fromList(up_list),
       sets.x.label = "Gene pro Medikament")
 ```
 :::
+
 ### Herunterreguliert
-::: {.no-stretch}
+
+::: no-stretch
 ```{r}
 upset(fromList(down_list), 
       order.by = "freq",
@@ -206,70 +230,90 @@ upset(fromList(down_list),
       sets.x.label = "Gene pro Medikament")
 ```
 :::
-
-::::
-
+:::::
 
 ## Signifikanz einzelner Gene
+
 ::: aside
 Chris
 :::
 
-:::: panel-tabset
+::: panel-tabset
 ### Sorafenib
+
 ```{r}
 plot_volcano_sora
 ```
--	↑↑↑ CDX2, BMF, PCK1, CDKN1B<br>**Zellzyklushemmung, Apoptose, Differenzierung**
-- ↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br>**Tumorwachstumsmechanismen**
+
+-   ↑↑↑ CDX2, BMF, PCK1, CDKN1B<br>**Zellzyklushemmung, Apoptose, Differenzierung**
+-   ↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br>**Tumorwachstumsmechanismen**
 
 ### Trametinib
+
 ```{r}
 plot_volcano_tram
 ```
--	↑↑↑ BMF, CYP1A, ASCL2<br>**Zellulärer Stress bzw. Schadensantworten**
-- ↓↓↓ TNS4, IER3, FOSL1<br>**MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung**
 
-::::
-
+-   ↑↑↑ BMF, CYP1A, ASCL2<br>**Zellulärer Stress bzw. Schadensantworten**
+-   ↓↓↓ TNS4, IER3, FOSL1<br>**MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung**
+:::
 
 # Gene Set Enrichment (GSE) and KEGG Pathway Analyse
 
 ## Signalwege, hochreguliert
+
 ::: aside
 Ivanna, Enrico
 :::
 
-:::: panel-tabset
+::: panel-tabset
 ### Top 10
+
 ```{r}
 gsea_plot_up
 ```
+
 ### Dot-Plot
+
 ```{r}
 gsea_dotplot_up
 ```
-::::
+:::
 
 ## Signalwege, herunterreguliert
+
 ::: aside
 Ivanna, Enrico
 :::
 
-:::: panel-tabset
+::: panel-tabset
 ### Top 10
+
 ```{r}
 gsea_plot_down
 ```
+
 ### Dot-Plot
+
 ```{r}
 gsea_dotplot_down
 ```
-::::
+:::
 
 # Nächste Schritte
 
 ## Variant Calling
+
 ::: aside
 Ivanna
 :::
+
+# Referenzen
+
+Qi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.
+
+Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.
+
+Li J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.
+
+Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.

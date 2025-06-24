@@ -1,10 +1,17 @@
 [
   {
-    "objectID": "index.html#überblick",
-    "href": "index.html#überblick",
+    "objectID": "index.html#sample-vorbereitung",
+    "href": "index.html#sample-vorbereitung",
     "title": "BIDS Projekt",
-    "section": "Überblick",
-    "text": "Überblick\n\n\nIvanna"
+    "section": "Sample Vorbereitung",
+    "text": "Sample Vorbereitung\n\n\n\n\n\n\n\n\n\nIvanna"
+  },
+  {
+    "objectID": "index.html#rna-seq-pipeline",
+    "href": "index.html#rna-seq-pipeline",
+    "title": "BIDS Projekt",
+    "section": "RNA-Seq Pipeline",
+    "text": "RNA-Seq Pipeline"
   },
   {
     "objectID": "index.html#wirkungsweise",
@@ -18,7 +25,7 @@
     "href": "index.html#ziel-unterschiede-in-der-genexpression-finden",
     "title": "BIDS Projekt",
     "section": "Ziel:Unterschiede in der Genexpression finden",
-    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\n\n\nConstanze"
+    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\nErgänzung zum log2FoldChange?\n\n\nConstanze"
   },
   {
     "objectID": "index.html#vorbereitung",
@@ -81,6 +88,6 @@
     "href": "index.html#variant-calling",
     "title": "BIDS Projekt",
     "section": "Variant Calling",
-    "text": "Variant Calling\n\n\n\n\nIvanna"
+    "text": "Variant Calling\n\n\nIvanna"
   }
 ]
