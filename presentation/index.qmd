@@ -9,7 +9,7 @@ author:
 format: 
   revealjs:
     footer: Gruppe 3
-    theme: sky
+    theme: white
     height: 100%
     width: 100%
     slide-number: true
