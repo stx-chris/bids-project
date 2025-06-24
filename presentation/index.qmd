@@ -22,22 +22,19 @@ library(UpSetR)
 ::: aside
 Ivanna
 :::
-::: no-stretch
-![](../images/intro1.jpg){width=70% fig-align="center"}
-:::
+
+![](../images/intro1.jpg){.nostretch fig-align="center" width="700px"}
 
 ## RNA-Seq Pipeline
-::: no-stretch
-![](../images/intro2.jpg){width=100% fig-align="center"}
-:::
+![](../images/intro2.jpg){.nostretch fig-align="center" width="100%"}
 
-## Wirkungsweise {.center}
-
+## Wirkungsweise
 ::: aside
 Enrico
 :::
 
 ```{mermaid}
+%%| fig-align: center
 flowchart TD
     RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
     RAS["RAS (GTPase)"]
