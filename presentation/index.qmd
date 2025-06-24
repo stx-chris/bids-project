@@ -6,21 +6,28 @@ author:
   - Ivanna Marchesini
   - Christoph Kovacs
   - Enrico Wondra
-execute:
-  cache: false
-
+#execute:
+#  cache: false
 ---
 
 ```{r}
 #| cache: false
 load("../session.RData")
+library(UpSetR)
 ```
 
-# Intro<br>[Ivanna, Enrico]
+# Einführung
 
-## Überblick [Ivanna]
+## Überblick
+::: aside
+Ivanna
+:::
 
-## Wirkungsweise [Enrico]
+## Wirkungsweise
+::: aside
+Enrico
+:::
+
 ```{mermaid}
 flowchart TD
     RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
@@ -28,110 +35,241 @@ flowchart TD
     RAF["RAF-Kinase (inkl. BRAF)"]
     MEK["MEK1/2-Kinase"]
     ERK["ERK1/2-Kinase"]
-    Prolif["Zellproliferation und Überleben"]
+    PRO["Zellproliferation und Überleben"]
 
-    RTK --> RAS --> RAF --> MEK --> ERK --> Prolif
+    RTK --> RAS --> RAF --> MEK --> ERK --> PRO
 
-    SORA["Sorafenib (RAF-Hemmer)"] -.-> RAF
-    TRAM["Trametinib (MEK-Hemmer)"] -.-> MEK
+    SORA["**Sorafenib** (RAF-Hemmer)"] -.-> RAF
+    TRAM["**Trametinib** (MEK-Hemmer)"] -.-> MEK
 
-    style SORA fill:#fdd835,stroke:#f57f17,stroke-width:2px
-    style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px
+    style SORA fill:yellow,stroke:orange,stroke-width:2px
+    style TRAM fill:aqua,stroke:blue,stroke-width:2px
 ```
 
+# Analyse
 
-# DGE:<br>Differentielle Gen-Expressions Analyse<br>[Constanze]
+## Ziel:<br>Unterschiede in der Genexpression finden
+::: aside
+Constanze
+:::
 
-## Set 1
+-   Aufstellen einer Nullhypothese H0: **kein Unterschied**
 
+-   Gegenhypothese: Es gibt einen **Unterschied**
+
+-   Negative Binominalverteilung zur Modellierung der Counts
+
+-   Fold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)
+
+-   Logarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)
+
+## Vorbereitung
+::: aside
+Constanze
+:::
+
+-   Erstellen einer Count-Matrix
+-   Filtern der Daten
+
+```{r}
+#| eval: false
+#| echo: true
+# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt
+
+keep <- rowSums(counts(dds) >= 10) >= 2
+sum(keep) # Behalte 18,198 Records für die Analyse (31%)
+sum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)
+```
+
+-   Erstellen des DeSeq2-Objekts
+-   Transformieren und Normalisieren der Beobachtungen
+
+## Count-Daten
+::: aside
+Constanze
+:::
+
+:::: panel-tabset
+### Nur transformiert
 ```{r}
 plot_counts_trans
+```
+### Transformiert und normalisiert
+```{r}
 plot_counts_normtrans
 ```
+::::
 
-## Set 2
+# Explorative Analyse
 
-```{r}
-plot_enrichment_down_sora
-plot_enrichment_down_tram
-```
+## Strukturfindung
+::: aside
+Chris
+:::
 
-## Group Separability [Chris]
-
-##
-::: {.panel-tabset}
-
+:::: panel-tabset
 ### Scree Plot
+
 **Optimale Anzahl Komponenten für PCA**
 
-::: {.no-stretch}
+::: no-stretch
 ```{r}
 plot_scree
 ```
-- Nur Top 500 Gene miteinbezogen
-- 2-3 Komponenten optimal
+
+-   Nur Top 500 Gene miteinbezogen
+-   2-3 Komponenten optimal
 :::
 
 ### 2D-PCA
+
 ```{r}
 plot_pca_2d
 ```
-- Klare Separierbarkeit entlang PC1
-- Stabile Kontrollgruppe
-- Sora deutlich von DMSO unterschieden
-- Tram mit In-Sample Unterschieden (PC2)
-- Problem: Misst nur linearen Zusammenhang
+
+-   Klare Separierbarkeit entlang PC1
+-   Stabile Kontrollgruppe
+-   Sora deutlich von DMSO unterschieden
+-   Tram mit In-Sample Unterschieden (PC2)
+-   Problem: Misst nur linearen Zusammenhang
 
 ### 3D-PCA
+
 ```{r}
 plot_pca_3d
 ```
-- PC3 erklärt nur knapp 7% der Gesamtvarianz
-- Keine bessere Separabilität
+
+-   PC3 erklärt nur knapp 7% der Gesamtvarianz
+-   Keine bessere Separabilität
 
 ### t-SNA
+
 **t-distributed Stochastic Neighbor Embedding**
+
 ```{r}
 plot_tsna
 ```
-- Misst lokalen nicht-linearen Zusammenhang
-- Deutliche Cluster der drei Treatments
-- Trametinib kohärenter als bei PCA
+
+-   Misst lokalen nicht-linearen Zusammenhang
+-   Deutliche Cluster der drei Treatments
+-   Trametinib kohärenter als bei PCA
 
 ### UMAP
+
 **Uniform Manifold Approximation and Projection**
+
 ```{r}
 plot_umap
 ```
-- Misst lokalen und globalen Zusammenhang
-- "Gradientenstruktur" DMSO → Tram → Sora
-- Problem: Zu wenige Samples
 
+-   Misst lokalen und globalen Zusammenhang
+-   "Gradientenstruktur" DMSO → Tram → Sora
+-   Problem: Zu wenige Samples
+::::
+
+# Differenzielle Expressions Analyse (DEG)
+
+## Signifikant regulierte Gene
+::: aside
+Constanze
 :::
 
-# GSE: Gene-set Enrichment Analysis<br>[Chris, Constanze]
-
-## Übersicht [Chris]
-::: {.no-stretch}
+::: no-stretch
 ```{r}
 plot_deg
 ```
 :::
-- Sorafenib ca. 3500 hoch- und runterregulierte Gene
-- Trametinib nur ca. 800
+-   Sorafenib ca. 3500 hoch- und runterregulierte Gene
+-   Trametinib nur ca. 800
 
-## Hochregulierte Gene [Constanze]
-- Up-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?
+## Gemeinsam regulierte Gene
+::: aside
+Constanze
+:::
 
-## Runterregulierte Gene [Constanze]
-- Down-Regulated genes Plot  (Sora, Tram, Together?)
+:::: panel-tabset
+### Hochreguliert
+::: {.no-stretch}
+```{r}
+upset(fromList(up_list), 
+      order.by = "freq",
+      mainbar.y.label = "Gemeinsame hochregulierte Gene",
+      sets.x.label = "Gene pro Medikament")
+```
+:::
+### Herunterreguliert
+::: {.no-stretch}
+```{r}
+upset(fromList(down_list), 
+      order.by = "freq",
+      mainbar.y.label = "Gemeinsame herunterregulierte Gene",
+      sets.x.label = "Gene pro Medikament")
+```
+:::
+
+::::
 
 
-# Gene Ontology (GO) and KEGG Pathway analysis<br>[Ivanna, Enrico]
+## Signifikanz einzelner Gene
+::: aside
+Chris
+:::
 
-## Hallmark
+:::: panel-tabset
+### Sorafenib
+```{r}
+plot_volcano_sora
+```
+-	↑↑↑ CDX2, BMF, PCK1, CDKN1B<br>**Zellzyklushemmung, Apoptose, Differenzierung**
+- ↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br>**Tumorwachstumsmechanismen**
+
+### Trametinib
+```{r}
+plot_volcano_tram
+```
+-	↑↑↑ BMF, CYP1A, ASCL2<br>**Zellulärer Stress bzw. Schadensantworten**
+- ↓↓↓ TNS4, IER3, FOSL1<br>**MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung**
+
+::::
 
 
-# Summary [Ivanna]
+# Gene Set Enrichment (GSE) and KEGG Pathway Analyse
 
-- Variant Calling
+## Signalwege, hochreguliert
+::: aside
+Ivanna, Enrico
+:::
+
+:::: panel-tabset
+### Top 10
+```{r}
+gsea_plot_up
+```
+### Dot-Plot
+```{r}
+gsea_dotplot_up
+```
+::::
+
+## Signalwege, herunterreguliert
+::: aside
+Ivanna, Enrico
+:::
+
+:::: panel-tabset
+### Top 10
+```{r}
+gsea_plot_down
+```
+### Dot-Plot
+```{r}
+gsea_dotplot_down
+```
+::::
+
+# Nächste Schritte
+
+## Variant Calling
+::: aside
+Ivanna
+:::

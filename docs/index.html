@@ -31,6 +31,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-ff18afce816b5ef2b7dbb5f63367f47a.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -171,15 +237,19 @@ Enrico Wondra
 
 </section>
 <section>
-<section id="intro-ivanna-enrico" class="title-slide slide level1 center">
-<h1>Intro<br>[Ivanna, Enrico]</h1>
+<section id="einführung" class="title-slide slide level1 center">
+<h1>Einführung</h1>
 
 </section>
-<section id="überblick-ivanna" class="slide level2">
-<h2>Überblick [Ivanna]</h2>
-</section>
-<section id="wirkungsweise-enrico" class="slide level2">
-<h2>Wirkungsweise [Enrico]</h2>
+<section id="überblick" class="slide level2">
+<h2>Überblick</h2>
+
+<aside><div>
+<p>Ivanna</p>
+</div></aside></section>
+<section id="wirkungsweise" class="slide level2">
+<h2>Wirkungsweise</h2>
+
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -191,48 +261,70 @@ Enrico Wondra
     RAF["RAF-Kinase (inkl. BRAF)"]
     MEK["MEK1/2-Kinase"]
     ERK["ERK1/2-Kinase"]
-    Prolif["Zellproliferation und Überleben"]
+    PRO["Zellproliferation und Überleben"]
 
-    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; Prolif
+    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO
 
-    SORA["Sorafenib (RAF-Hemmer)"] -.-&gt; RAF
-    TRAM["Trametinib (MEK-Hemmer)"] -.-&gt; MEK
+    SORA["**Sorafenib** (RAF-Hemmer)"] -.-&gt; RAF
+    TRAM["**Trametinib** (MEK-Hemmer)"] -.-&gt; MEK
 
-    style SORA fill:#fdd835,stroke:#f57f17,stroke-width:2px
-    style TRAM fill:#81d4fa,stroke:#0288d1,stroke-width:2px
+    style SORA fill:yellow,stroke:orange,stroke-width:2px
+    style TRAM fill:aqua,stroke:blue,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-</section></section>
+<aside><div>
+<p>Enrico</p>
+</div></aside></section></section>
 <section>
-<section id="dge-differentielle-gen-expressions-analyse-constanze" class="title-slide slide level1 center">
-<h1>DGE:<br>Differentielle Gen-Expressions Analyse<br>[Constanze]</h1>
+<section id="analyse" class="title-slide slide level1 center">
+<h1>Analyse</h1>
 
 </section>
-<section id="set-1" class="slide level2">
-<h2>Set 1</h2>
+<section id="ziel-unterschiede-in-der-genexpression-finden" class="slide level2">
+<h2>Ziel:<br>Unterschiede in der Genexpression finden</h2>
+
+<ul>
+<li><p>Aufstellen einer Nullhypothese H0: <strong>kein Unterschied</strong></p></li>
+<li><p>Gegenhypothese: Es gibt einen <strong>Unterschied</strong></p></li>
+<li><p>Negative Binominalverteilung zur Modellierung der Counts</p></li>
+<li><p>Fold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)</p></li>
+<li><p>Logarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)</p></li>
+</ul>
+<aside><div>
+<p>Constanze</p>
+</div></aside></section>
+<section id="vorbereitung" class="slide level2">
+<h2>Vorbereitung</h2>
+
+<ul>
+<li>Erstellen einer Count-Matrix</li>
+<li>Filtern der Daten</li>
+</ul>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
-</figure>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt</span></span>
+<span id="cb1-2"><a></a></span>
+<span id="cb1-3"><a></a>keep <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(<span class="fu">counts</span>(dds) <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&gt;=</span> <span class="dv">2</span></span>
+<span id="cb1-4"><a></a><span class="fu">sum</span>(keep) <span class="co"># Behalte 18,198 Records für die Analyse (31%)</span></span>
+<span id="cb1-5"><a></a><span class="fu">sum</span>(<span class="fu">dim</span>(count_matrix)[<span class="dv">1</span>]<span class="sc">-</span><span class="fu">sum</span>(keep)) <span class="co"># Verwerfe 39,575 Records (69%)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-3-2.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="set-2" class="slide level2">
-<h2>Set 2</h2>
+<ul>
+<li>Erstellen des DeSeq2-Objekts</li>
+<li>Normalisierung der Beobachtungen</li>
+</ul>
+<aside><div>
+<p>Constanze</p>
+</div></aside></section>
+<section id="count-daten" class="slide level2">
+<h2>Count-Daten</h2>
+
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Nur transformiert</a></li><li><a href="#tabset-1-2">Transformiert und normalisiert</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -241,31 +333,43 @@ Enrico Wondra
 </figure>
 </div>
 </div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-4-2.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<aside><div>
+<p>Constanze</p>
+</div></aside></section></section>
+<section>
+<section id="explorative-analyse" class="title-slide slide level1 center">
+<h1>Explorative Analyse</h1>
+
 </section>
-<section id="group-separability-chris" class="slide level2">
-<h2>Group Separability [Chris]</h2>
-</section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="strukturfindung" class="slide level2">
+<h2>Strukturfindung</h2>
+
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Scree Plot</a></li><li><a href="#tabset-1-2">2D-PCA</a></li><li><a href="#tabset-1-3">3D-PCA</a></li><li><a href="#tabset-1-4">t-SNA</a></li><li><a href="#tabset-1-5">UMAP</a></li></ul>
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Scree Plot</a></li><li><a href="#tabset-2-2">2D-PCA</a></li><li><a href="#tabset-2-3">3D-PCA</a></li><li><a href="#tabset-2-4">t-SNA</a></li><li><a href="#tabset-2-5">UMAP</a></li></ul>
 <div class="tab-content">
-<div id="tabset-1-1">
+<div id="tabset-2-1">
 <p><strong>Optimale Anzahl Komponenten für PCA</strong></p>
 <div class="no-stretch">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -276,12 +380,12 @@ Enrico Wondra
 </ul>
 </div>
 </div>
-<div id="tabset-1-2">
+<div id="tabset-2-2">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -294,11 +398,11 @@ Enrico Wondra
 <li>Problem: Misst nur linearen Zusammenhang</li>
 </ul>
 </div>
-<div id="tabset-1-3">
+<div id="tabset-2-3">
 <div class="cell">
 <div class="cell-output-display">
 <div class="plotly html-widget html-fill-item" id="htmlwidget-e8980251b4ee1bfbce5c" style="width:960px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-e8980251b4ee1bfbce5c">{"x":{"visdat":{"8759b47dbe2":["function () ","plotlyVisDat"]},"cur_data":"8759b47dbe2","attrs":{"8759b47dbe2":{"x":{},"y":{},"z":{},"text":{},"mode":"markers","color":{},"colors":"Set1","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"PC1 (66%)"},"yaxis":{"title":"PC2 (20.9%)"},"zaxis":{"title":"PC3 (6.6%)"}},"title":"3D PCA of RNA-Seq Samples","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-8.5150211133900449,-7.834434882734695],"y":[1.9994614046429313,1.2232330609303004],"z":[1.7934294285020662,-3.3138133707163515],"text":["Sample: 1_DMSO_1","Sample: 2_DMSO_2"],"mode":"markers","type":"scatter3d","name":"DMSO","marker":{"color":"rgba(228,26,28,1)","line":{"color":"rgba(228,26,28,1)"}},"textfont":{"color":"rgba(228,26,28,1)"},"error_y":{"color":"rgba(228,26,28,1)"},"error_x":{"color":"rgba(228,26,28,1)"},"line":{"color":"rgba(228,26,28,1)"},"frame":null},{"x":[8.4329177240862361,8.3713336349977236],"y":[1.8036370539408706,2.1456914252847659],"z":[1.3831863816587411,-2.3606609280664825],"text":["Sample: 3_Sora_1","Sample: 4_Sora_2"],"mode":"markers","type":"scatter3d","name":"Sorafenib","marker":{"color":"rgba(55,126,184,1)","line":{"color":"rgba(55,126,184,1)"}},"textfont":{"color":"rgba(55,126,184,1)"},"error_y":{"color":"rgba(55,126,184,1)"},"error_x":{"color":"rgba(55,126,184,1)"},"line":{"color":"rgba(55,126,184,1)"},"frame":null},{"x":[-1.0590918523910982,0.60429648943187875],"y":[1.3402748455536655,-8.5122977903525197],"z":[2.4664291287956184,0.031429359826390418],"text":["Sample: 5_Tram_1","Sample: 6_Tram_2"],"mode":"markers","type":"scatter3d","name":"Trametinib","marker":{"color":"rgba(77,175,74,1)","line":{"color":"rgba(77,175,74,1)"}},"textfont":{"color":"rgba(77,175,74,1)"},"error_y":{"color":"rgba(77,175,74,1)"},"error_x":{"color":"rgba(77,175,74,1)"},"line":{"color":"rgba(77,175,74,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-e8980251b4ee1bfbce5c">{"x":{"visdat":{"13c486453f14d":["function () ","plotlyVisDat"]},"cur_data":"13c486453f14d","attrs":{"13c486453f14d":{"x":{},"y":{},"z":{},"text":{},"mode":"markers","color":{},"colors":"Set1","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"PC1 (66%)"},"yaxis":{"title":"PC2 (20.9%)"},"zaxis":{"title":"PC3 (6.6%)"}},"title":"3D PCA of RNA-Seq Samples","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-8.5150211133900449,-7.834434882734695],"y":[1.9994614046429313,1.2232330609303004],"z":[1.7934294285020662,-3.3138133707163515],"text":["Sample: 1_DMSO_1","Sample: 2_DMSO_2"],"mode":"markers","type":"scatter3d","name":"DMSO","marker":{"color":"rgba(228,26,28,1)","line":{"color":"rgba(228,26,28,1)"}},"textfont":{"color":"rgba(228,26,28,1)"},"error_y":{"color":"rgba(228,26,28,1)"},"error_x":{"color":"rgba(228,26,28,1)"},"line":{"color":"rgba(228,26,28,1)"},"frame":null},{"x":[8.4329177240862361,8.3713336349977236],"y":[1.8036370539408706,2.1456914252847659],"z":[1.3831863816587411,-2.3606609280664825],"text":["Sample: 3_Sora_1","Sample: 4_Sora_2"],"mode":"markers","type":"scatter3d","name":"Sorafenib","marker":{"color":"rgba(55,126,184,1)","line":{"color":"rgba(55,126,184,1)"}},"textfont":{"color":"rgba(55,126,184,1)"},"error_y":{"color":"rgba(55,126,184,1)"},"error_x":{"color":"rgba(55,126,184,1)"},"line":{"color":"rgba(55,126,184,1)"},"frame":null},{"x":[-1.0590918523910982,0.60429648943187875],"y":[1.3402748455536655,-8.5122977903525197],"z":[2.4664291287956184,0.031429359826390418],"text":["Sample: 5_Tram_1","Sample: 6_Tram_2"],"mode":"markers","type":"scatter3d","name":"Trametinib","marker":{"color":"rgba(77,175,74,1)","line":{"color":"rgba(77,175,74,1)"}},"textfont":{"color":"rgba(77,175,74,1)"},"error_y":{"color":"rgba(77,175,74,1)"},"error_x":{"color":"rgba(77,175,74,1)"},"line":{"color":"rgba(77,175,74,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <ul>
@@ -306,13 +410,13 @@ Enrico Wondra
 <li>Keine bessere Separabilität</li>
 </ul>
 </div>
-<div id="tabset-1-4">
+<div id="tabset-2-4">
 <p><strong>t-distributed Stochastic Neighbor Embedding</strong></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -323,13 +427,13 @@ Enrico Wondra
 <li>Trametinib kohärenter als bei PCA</li>
 </ul>
 </div>
-<div id="tabset-1-5">
+<div id="tabset-2-5">
 <p><strong>Uniform Manifold Approximation and Projection</strong></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -342,20 +446,23 @@ Enrico Wondra
 </div>
 </div>
 </div>
-</section></section>
+<aside><div>
+<p>Chris</p>
+</div></aside></section></section>
 <section>
-<section id="gse-gene-set-enrichment-analysis-chris-constanze" class="title-slide slide level1 center">
-<h1>GSE: Gene-set Enrichment Analysis<br>[Chris, Constanze]</h1>
+<section id="differenzielle-expressions-analyse-deg" class="title-slide slide level1 center">
+<h1>Differenzielle Expressions Analyse (DEG)</h1>
 
 </section>
-<section id="übersicht-chris" class="slide level2">
-<h2>Übersicht [Chris]</h2>
+<section id="signifikant-regulierte-gene" class="slide level2">
+<h2>Signifikant regulierte Gene</h2>
+
 <div class="no-stretch">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -365,35 +472,171 @@ Enrico Wondra
 <li>Sorafenib ca. 3500 hoch- und runterregulierte Gene</li>
 <li>Trametinib nur ca. 800</li>
 </ul>
-</section>
-<section id="hochregulierte-gene-constanze" class="slide level2">
-<h2>Hochregulierte Gene [Constanze]</h2>
+<aside><div>
+<p>Constanze</p>
+</div></aside></section>
+<section id="gemeinsam-regulierte-gene" class="slide level2">
+<h2>Gemeinsam regulierte Gene</h2>
+
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Hochreguliert</a></li><li><a href="#tabset-3-2">Herunterreguliert</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="no-stretch">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="no-stretch">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside><div>
+<p>Constanze</p>
+</div></aside></section>
+<section id="signifikanz-einzelner-gene" class="slide level2">
+<h2>Signifikanz einzelner Gene</h2>
+
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Sorafenib</a></li><li><a href="#tabset-4-2">Trametinib</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li>Up-Regulated genes Plot (Sora, Tram, Together?) gibt es überhaupt Tram upregulated?</li>
+<li>↑↑↑ CDX2, BMF, PCK1, CDKN1B<br><strong>Zellzyklushemmung, Apoptose, Differenzierung</strong></li>
+<li>↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br><strong>Tumorwachstumsmechanismen</strong></li>
 </ul>
-</section>
-<section id="runterregulierte-gene-constanze" class="slide level2">
-<h2>Runterregulierte Gene [Constanze]</h2>
+</div>
+<div id="tabset-4-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li>Down-Regulated genes Plot (Sora, Tram, Together?)</li>
+<li>↑↑↑ BMF, CYP1A, ASCL2<br><strong>Zellulärer Stress bzw. Schadensantworten</strong></li>
+<li>↓↓↓ TNS4, IER3, FOSL1<br><strong>MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung</strong></li>
 </ul>
-</section></section>
+</div>
+</div>
+</div>
+<aside><div>
+<p>Chris</p>
+</div></aside></section></section>
 <section>
-<section id="gene-ontology-go-and-kegg-pathway-analysis-ivanna-enrico" class="title-slide slide level1 center">
-<h1>Gene Ontology (GO) and KEGG Pathway analysis<br>[Ivanna, Enrico]</h1>
+<section id="gene-set-enrichment-gse-and-kegg-pathway-analyse" class="title-slide slide level1 center">
+<h1>Gene Set Enrichment (GSE) and KEGG Pathway Analyse</h1>
 
 </section>
-<section id="hallmark" class="slide level2">
-<h2>Hallmark</h2>
-</section></section>
-<section id="summary-ivanna" class="title-slide slide level1 center">
-<h1>Summary [Ivanna]</h1>
-<ul>
-<li>Variant Calling</li>
-</ul>
+<section id="signalwege-hochreguliert" class="slide level2">
+<h2>Signalwege, hochreguliert</h2>
 
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Top 10</a></li><li><a href="#tabset-5-2">Dot-Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside><div>
+<p>Ivanna, Enrico</p>
+</div></aside></section>
+<section id="signalwege-herunterreguliert" class="slide level2">
+<h2>Signalwege, herunterreguliert</h2>
+
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Top 10</a></li><li><a href="#tabset-6-2">Dot-Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-6-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside><div>
+<p>Ivanna, Enrico</p>
+</div></aside></section></section>
+<section>
+<section id="nächste-schritte" class="title-slide slide level1 center">
+<h1>Nächste Schritte</h1>
 
 </section>
+<section id="variant-calling" class="slide level2">
+<h2>Variant Calling</h2>
+
+
+
+<aside><div>
+<p>Ivanna</p>
+</div></aside></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

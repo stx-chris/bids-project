@@ -510,12 +510,14 @@ tsne_out <- Rtsne(mat_top, dims = 2, perplexity = 1, verbose = TRUE)
 tsne_df <- data.frame(
   TSNE1 = tsne_out$Y[,1],
   TSNE2 = tsne_out$Y[,2],
-  group = colData(rld)$group  # adjust if your metadata column is named differently
+  group = colData(rld)$group,  # adjust if your metadata column is named differently
+  sample = colnames(rld)  # Add sample names as a column
 )
 
 # Plot with ggplot2
 plot_tsna <- ggplot(tsne_df, aes(x = TSNE1, y = TSNE2, color = group)) +
   geom_point(size = 3) +
+  geom_text_repel(aes(label = sample), size = 3, max.overlaps = Inf) +
   labs(title = "t-SNE of RNA-seq samples", x = "t-SNE 1", y = "t-SNE 2") +
   theme_minimal()
 plot_tsna
@@ -812,6 +814,17 @@ tab_upset_tram_up <- head(upSetSets(up_list)$Trametinib)  # für hochregulierte 
 
 tab_upset_sora_down <- head(upSetSets(down_list)$Sorafenib)  # für runterregulierte Gene
 tab_upset_tram_down <- head(upSetSets(down_list)$Trametinib)  # für runterregulierte Gene
+
+
+# Optional: Zugriff auf die einzelnen Sets
+up_sets <- upSetSets(up_list)
+down_sets <- upSetSets(down_list)
+
+# Durch beide Medikamente hoch-regulierte Gene
+up_sets[["Sorafenib-Trametinib"]]
+
+# Durch beide Medikamente runter-regulierte Gene
+down_sets[["Sorafenib-Trametinib"]]
 ```
 
 
@@ -954,57 +967,118 @@ universe_df <- tibble(ENSEMBL = ensembl_ids) |>
 universe <- universe_df$Symbol |> unique() |> na.omit()
 ```
 
-#### Gemeinsamkeiten: Durch beide Medikamente hoch-regulierte Hallmark Gensets
+```{r GSEA Universe und Hallmark}
+# Hallmark Gensets sind bereits geladen als 'hallmark' (siehe oben)
 
-```{r}
-top_enrichment_plot <- function(ds, title) {
-  top_enrichment <- ds |> 
-    slice_min(order_by = `adj.P.Val`, n = 10)
+# GSEA für durch beide Medikamente hoch-regulierte Gene
+gsea_up <- hyperG(
+  geneSets = hallmark,
+  DEgenes = up_sets[["Sorafenib-Trametinib"]]$ID,
+  universe = universe,
+  cutoff = 0.1,
+  mincount = 2,
+  parallel = TRUE,
+  set.size = c(10,500)
+)
 
-  return (ggplot(top_enrichment, aes(x = reorder(Term, -`adj.P.Val`), y = -log10(`adj.P.Val`))) +
-    geom_col(fill = "steelblue") +
-    coord_flip() +
-    labs(
-      title = title,
-      x = "Pathway",
-      y = "-log10(adj. p-value)"
-    ) +
-    theme_minimal())
-}
-
-  enrichment_up_sora <- hyperG(hallmark, up_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-  plot_enrichment_up_sora <- top_enrichment_plot(enrichment_up_sora, "Top Enriched Hallmark Pathways (Sorafenib UP)")
-  plot_enrichment_up_sora
-## Interpretation (KI-unterstützt)
-## ==============
-## Die Behandlung mit Sorafenib führt zu einer signifikanten Hochregulation von Genen, die mit dem Zelltod (Apoptosis, p53), zellulärem Stress (zB Uv-Antwort), Immunantwort (Interferon Gamma) und Stoffwechselprozessen (Adipogenese, Häm- und Peroxisomenstoffwechsel) assoziiert sind. Dies unterstützt die bekannte cytotoxische und wachstumshemmende Wirkung von Sorafenib auf zellulärer Ebene.
-
-enrichment_up_tram <- hyperG(hallmark, up_tram, universe, cutoff = 0.05, adj.P.Val = TRUE) # empty???
-plot_enrichment_up_tram <- top_enrichment_plot(enrichment_up_tram, "Top Enriched Hallmark Pathways (Trametinib UP)")
-plot_enrichment_up_tram
-## Interpretation
-## ==============
-## ?
+# GSEA für durch beide Medikamente runter-regulierte Gene
+gsea_down <- hyperG(
+  geneSets = hallmark,
+  DEgenes = down_sets[["Sorafenib-Trametinib"]]$ID,
+  universe = universe,
+  cutoff = 0.1,
+  mincount = 2,
+  parallel = TRUE,
+  set.size = c(10,500)
+)
 ```
 
-#### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
+### Gemeinsamkeiten: Durch beide Medikamente hoch-regulierte Hallmark Gensets
 
 ```{r}
-enrichment_down_sora <- hyperG(hallmark, down_sora, universe, cutoff = 0.05, adj.P.Val = TRUE)
-plot_enrichment_down_sora <- top_enrichment_plot(enrichment_down_sora, "Top Enriched Hallmark Pathways (Sorafenib DOWN)")
-plot_enrichment_down_sora
-## Interpretation (KI-unterstützt)
-## ==============
-## Sorafenib führt zur signifikanten Herunterregulierung von Genen, die an Zellwachstum (MYC, mTORC1, G2M), Zellzyklusprogression, Entzündungsreaktionen (TNFα/NFκB) und Stressantworten beteiligt sind. Diese Ergebnisse sprechen für eine starke antiproliferative und antiinflammatorische Wirkung des Medikaments, ergänzt durch eine Hemmung zellulärer Überlebenssignale.
+gsea_up
+gsea_up$Term <- gsub("HALLMARK_", "", gsea_up$Term)
+```
 
-enrichment_down_tram <- hyperG(hallmark, down_tram, universe, cutoff = 0.05, adj.P.Val = TRUE)
-plot_enrichment_down_tram <- top_enrichment_plot(enrichment_down_tram, "Top Enriched Hallmark Pathways (Trametinib DOWN)")
-plot_enrichment_down_tram
-## Interpretation (KI-unterstützt)
-## ==============
-## Trametinib führt zu einer ausgeprägten Unterdrückung entzündungsbezogener Signalwege (TNFα/NFκB, IL-2, IL-6, STAT3), Zellüberlebenssignale sowie Komponenten der MAPK-Kaskade (KRAS). Diese Ergebnisse sind kompatibel mit dem Wirkmechanismus von Trametinib als MEK-Inhibitor und deuten auf eine kombinierte hemmende Wirkung auf Proliferation, Entzündung und Stressantwort hin.
+```{r gsea_up enrichment plot}
+gsea_up_plot <- gsea_up[order(gsea_up$adj.P.Val), ][1:10, ]
+gsea_up_plot$Term <- factor(gsea_up_plot$Term, levels = rev(gsea_up_plot$Term))
 
+gsea_plot_up <- ggplot(gsea_up_plot, aes(x = Term, y = -log10(adj.P.Val), fill = Count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Enriched Hallmark Gene Sets (Up-regulated)",
+    x = "Gene Set",
+    y = "-log10(adj. p-value)",
+    fill = "Gene Count"
+  ) +
+  theme_minimal()
+gsea_plot_up
+```
 
+```{r Dotplot gsea_up, fig.width=8, fig.height=5}
+# Calculate ratio and order by ratio descending, select top 25
+gsea_up_plot <- gsea_up
+gsea_up_plot$Ratio <- gsea_up_plot$Count / gsea_up_plot$Size
+gsea_up_plot <- gsea_up_plot[order(gsea_up_plot$Ratio, decreasing = TRUE), ][1:min(25, nrow(gsea_up_plot)), ]
+gsea_up_plot$Term <- factor(gsea_up_plot$Term, levels = rev(gsea_up_plot$Term))
+
+gsea_dotplot_up <- ggplot(gsea_up_plot, aes(x = Ratio, y = Term)) +
+  geom_point(aes(size = Count, color = -log10(adj.P.Val))) +
+  scale_color_viridis_c(option = "plasma", direction = -1, name = "-log10(adj. p-value)") +
+  labs(
+    title = "Dotplot: Top Enriched Hallmark Gene Sets (Up-regulated, Ordered by Ratio)",
+    x = "Gene Ratio (Count / Size)",
+    y = "Gene Set",
+    size = "Gene Count"
+  ) +
+  theme_minimal()
+gsea_dotplot_up
+```
+
+### Gemeinsamkeiten: Durch beide Medikamente runter-regulierte Hallmark Gensets
+
+```{r}
+gsea_down
+gsea_down$Term <- gsub("HALLMARK_", "", gsea_down$Term)
+```
+
+```{r gsea_down enrichment plot}
+gsea_down_plot <- gsea_down[order(gsea_down$adj.P.Val), ][1:10, ]
+gsea_down_plot$Term <- factor(gsea_down_plot$Term, levels = rev(gsea_down_plot$Term))
+
+gsea_plot_down <- ggplot(gsea_down_plot, aes(x = Term, y = -log10(adj.P.Val), fill = Count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Enriched Hallmark Gene Sets (Down-regulated)",
+    x = "Gene Set",
+    y = "-log10(adj. p-value)",
+    fill = "Gene Count"
+  ) +
+  theme_minimal()
+gsea_plot_down
+```
+
+```{r Dotplot gsea_down, fig.width=8, fig.height=5}
+# Calculate ratio and order by ratio descending, select top 25
+gsea_down_plot <- gsea_down
+gsea_down_plot$Ratio <- gsea_down_plot$Count / gsea_down_plot$Size
+gsea_down_plot <- gsea_down_plot[order(gsea_down_plot$Ratio, decreasing = TRUE), ][1:min(25, nrow(gsea_down_plot)), ]
+gsea_down_plot$Term <- factor(gsea_down_plot$Term, levels = rev(gsea_down_plot$Term))
+
+gsea_dotplot_down <- ggplot(gsea_down_plot, aes(x = Ratio, y = Term)) +
+  geom_point(aes(size = Count, color = -log10(adj.P.Val))) +
+  scale_color_viridis_c(option = "plasma", direction = -1, name = "-log10(adj. p-value)") +
+  labs(
+    title = "Dotplot: Top Enriched KEGG Pathways (Ordered by Ratio)",
+    x = "Gene Ratio (Count / Size)",
+    y = "KEGG Pathway",
+    size = "Gene Count"
+  ) +
+  theme_minimal()
+gsea_dotplot_down
 ```
 
 # Anhang
