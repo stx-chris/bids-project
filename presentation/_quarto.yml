@@ -19,7 +19,7 @@ format:
     show-slide-number: all
     smaller: true
     scrollable: true
-    self-contained: true  # <- wichtig für einfaches Hosting
+    embed-resources: false
 lang: de
 
 
