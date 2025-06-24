@@ -6,17 +6,6 @@ author:
   - Ivanna Marchesini
   - Christoph Kovacs
   - Enrico Wondra
-format: 
-  revealjs:
-    footer: Gruppe 3
-    theme: white
-    height: 100%
-    width: 100%
-    slide-number: true
-    show-slide-number: all
-    smaller: true
-    scrollable: true
-lang: de
 execute:
   cache: false
 
