@@ -125,7 +125,9 @@ packages <- c(
   "kableExtra",
   "pheatmap",
   "EnhancedVolcano",
-  "msigdbr"
+  "msigdbr",
+  "clusterProfiler",
+  "AnnotationDbi"
 )
 BiocManager::install(packages)
 ```
@@ -799,14 +801,18 @@ down_list <- list(
 plot_upset_up <- upset(fromList(up_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame hochregulierte Gene",
-      sets.x.label = "Gene pro Medikament")
+      sets.x.label = "Gene pro Medikament",
+      text.scale = c(2, 2, 2, 2, 2, 2)
+    )
 plot_upset_up
 
 # Runterregulierte Gene
 plot_upset_down <- upset(fromList(down_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame runterregulierte Gene",
-      sets.x.label = "Gene pro Medikament")
+      sets.x.label = "Gene pro Medikament",
+      text.scale = c(2, 2, 2, 2, 2, 2)
+    )
 plot_upset_down
 
 tab_upset_sora_up <- head(upSetSets(up_list)$Sorafenib)  # für hochregulierte Gene
@@ -1079,6 +1085,138 @@ gsea_dotplot_down <- ggplot(gsea_down_plot, aes(x = Ratio, y = Term)) +
   ) +
   theme_minimal()
 gsea_dotplot_down
+```
+
+#### Gene Ontology Analysis
+
+```{r GO}
+# DEG analysis with lfcShrink for more accurate log2FC
+sora_res <- lfcShrink(dds, contrast = c("group", "Sorafenib", "DMSO"), type = "normal")
+tram_res <- lfcShrink(dds, contrast = c("group", "Trametinib", "DMSO"), type = "normal")
+
+# Annotate with gene symbols
+geneMat <- getGeneMat(rownames(sora_res))
+sora_annot <- cbind(geneMat, as.data.frame(sora_res))
+tram_annot <- cbind(geneMat, as.data.frame(tram_res))
+
+# Filter for significant genes (FDR < 0.05)
+sora_sig <- sora_annot %>% filter(!is.na(padj) & padj < 0.05)
+tram_sig <- tram_annot %>% filter(!is.na(padj) & padj < 0.05)
+
+# Split into up/down-regulated
+sora_up   <- sora_sig %>% filter(log2FoldChange > 0)
+sora_down <- sora_sig %>% filter(log2FoldChange < 0)
+tram_up   <- tram_sig %>% filter(log2FoldChange > 0)
+tram_down <- tram_sig %>% filter(log2FoldChange < 0)
+
+library(clusterProfiler)
+library(AnnotationDbi)
+
+sora_up_genes_to_test <- rownames(sora_up)
+tram_up_genes_to_test <- rownames(tram_up)
+sora_down_genes_to_test <- rownames(sora_down)
+tram_down_genes_to_test <- rownames(tram_down)
+sora_up_go_results <- enrichGO(
+  gene = sora_up_genes_to_test,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENSEMBL",
+  ont = "BP", # Biological Process
+)
+tram_up_go_results <- enrichGO(
+  gene = tram_up_genes_to_test,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENSEMBL",
+  ont = "BP", # Biological Process
+)
+sora_down_go_results <- enrichGO(
+  gene = sora_down_genes_to_test,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENSEMBL",
+  ont = "BP", # Biological Process
+)
+tram_down_go_results <- enrichGO(
+  gene = tram_down_genes_to_test,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENSEMBL",
+  ont = "BP", # Biological Process
+)
+# Order GO enrichment results by Count descending
+sora_up_go_results@result <- sora_up_go_results@result[order(-sora_up_go_results@result$Count), ]
+tram_up_go_results@result <- tram_up_go_results@result[order(-tram_up_go_results@result$Count), ]
+sora_down_go_results@result <- sora_down_go_results@result[order(-sora_down_go_results@result$Count), ]
+tram_down_go_results@result <- tram_down_go_results@result[order(-tram_down_go_results@result$Count), ]
+```
+
+Barplots der GO Ergebnisse für Sorafenib Up-Regulierte Gene:
+
+```{r GO Plot Sora Up, fig.width=12, fig.height=10}
+plot_go_sora_up <- barplot(
+  sora_up_go_results,
+  showCategory = 10,
+  font.size = 12,
+  title = "GO Enrichment Sorafenib Hochregulierte Gene"
+) +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 11),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.margin = margin(t = 5, r = 5, b = 5, l = 30, unit = "mm")  # adds left space for labels
+  )
+plot_go_sora_up
+```
+
+Barplots der GO Ergebnisse für Sorafenib Down-Regulierte Gene:
+
+```{r GO Plot Sora Down, fig.width=12, fig.height=10}
+plot_go_sora_down <- barplot(
+  sora_down_go_results,
+  showCategory = 10,
+  font.size = 12,
+  title = "GO Enrichment Sorafenib Herunteregulierte Gene"
+) +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 11),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.margin = margin(t = 5, r = 5, b = 5, l = 30, unit = "mm")  # adds left space for labels
+  )
+plot_go_sora_down
+```
+
+Barplots der GO Ergebnisse für Trametinib Up-Regulierte Gene:
+
+```{r Go Plot Tram Up, fig.width=12, fig.height=10}
+plot_go_tram_up <- barplot(
+  tram_up_go_results,
+  showCategory = 10,
+  font.size = 12,
+  title = "GO Enrichment Trametinib Hochregulierte Gene"
+) +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 11),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.margin = margin(t = 5, r = 5, b = 5, l = 30, unit = "mm")  # adds left space for labels
+  )
+plot_go_tram_up
+```
+
+Barplots der GO Ergebnisse für Trametinib Down-Regulierte Gene:
+
+```{r Go Plot Tram Down, fig.width=12, fig.height=10}
+plot_go_tram_down <- barplot(
+  tram_down_go_results,
+  showCategory = 10,
+  font.size = 12,
+  title = "GO Enrichment Trametinib Herunteregulierte Gene"
+) +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 11),
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.margin = margin(t = 5, r = 5, b = 5, l = 30, unit = "mm")  # adds left space for labels
+  )
+plot_go_tram_down
 ```
 
 # Anhang

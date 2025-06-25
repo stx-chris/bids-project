@@ -61,15 +61,10 @@ Constanze
 :::
 
 -   Aufstellen einer Nullhypothese H0: **kein Unterschied**
-
 -   Gegenhypothese: Es gibt einen **Unterschied**
-
--   Negative Binominalverteilung zur Modellierung der Counts
-
+-   Negative Binominalverteilung zur Modellierung der Counts (Varianz besser abbildbar)
 -   Fold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)
-
 -   Logarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)
-
 -   Ergänzung zum log2FoldChange?
 
 ## Vorbereitung
@@ -213,7 +208,8 @@ Constanze
 upset(fromList(up_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame hochregulierte Gene",
-      sets.x.label = "Gene pro Medikament")
+      sets.x.label = "Gene pro Medikament",
+      text.scale = c(2, 2, 2, 2, 2, 2))
 ```
 :::
 
@@ -224,7 +220,8 @@ upset(fromList(up_list),
 upset(fromList(down_list), 
       order.by = "freq",
       mainbar.y.label = "Gemeinsame herunterregulierte Gene",
-      sets.x.label = "Gene pro Medikament")
+      sets.x.label = "Gene pro Medikament",
+      text.scale = c(2, 2, 2, 2, 2, 2))
 ```
 :::
 :::::
@@ -297,13 +294,56 @@ gsea_dotplot_down
 ```
 :::
 
-# Nächste Schritte
 
-## Variant Calling
+## Gene Ontology Analyse
+
+::: aside
+Ivanna, Enrico
+:::
+
+:::: panel-tabset
+
+### Sora Up
+```{r}
+plot_go_sora_up
+```
+
+### Sora Down
+```{r}
+plot_go_sora_down
+```
+
+### Tram Up
+```{r}
+plot_go_tram_up
+```
+
+### Tram Down
+```{r}
+plot_go_tram_down
+```
+:::: 
+
+# Ideen
+
+##
 
 ::: aside
 Ivanna
 :::
+
+- Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks<br>**→ Trainieren von Modellen**
+- Führe die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.<br>**→ Gibt es Unterschiede?**
+- Spielt **DNA-Methylierung** eine Rolle?
+
+
+## Code Repositories
+
+- <a href="https://github.com/CLeichtweiss/Systembiologie2025" data-preview-link>Github Constanze Leichtweiß</a>
+- <a href="https://github.com/ivimarchesini/bids-rna-sequencing" data-preview-link>Github Ivanna Marchesini</a>
+- <a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
+- <a href="https://github.com/en-wo/Systembiologie2025" data-preview-link>Github Enrico Wondra</a>
+
 
 ## Referenzen
 

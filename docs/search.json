@@ -25,7 +25,7 @@
     "href": "index.html#ziel-unterschiede-in-der-genexpression-finden",
     "title": "BIDS Projekt",
     "section": "Ziel:Unterschiede in der Genexpression finden",
-    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\nErgänzung zum log2FoldChange?\n\n\nConstanze"
+    "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\nNegative Binominalverteilung zur Modellierung der Counts (Varianz besser abbildbar)\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLogarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\nErgänzung zum log2FoldChange?\n\n\nConstanze"
   },
   {
     "objectID": "index.html#vorbereitung",
@@ -96,5 +96,40 @@
     "title": "BIDS Projekt",
     "section": "Referenzen",
     "text": "Referenzen\n\n\n\n\n\nQi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.\nDobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.\nLi J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.\nKoch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner’s Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.\nWall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944."
+  },
+  {
+    "objectID": "index.html#gene-ontology-analysis",
+    "href": "index.html#gene-ontology-analysis",
+    "title": "BIDS Projekt",
+    "section": "Gene Ontology Analysis",
+    "text": "Gene Ontology Analysis\n\nSora UpSora DownTram UpTram Down"
+  },
+  {
+    "objectID": "index.html#gene-ontology-analyse",
+    "href": "index.html#gene-ontology-analyse",
+    "title": "BIDS Projekt",
+    "section": "Gene Ontology Analyse",
+    "text": "Gene Ontology Analyse\n\n\nSora UpSora DownTram UpTram Down\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
+  },
+  {
+    "objectID": "index.html#code-repositories",
+    "href": "index.html#code-repositories",
+    "title": "BIDS Projekt",
+    "section": "Code Repositories",
+    "text": "Code Repositories\n\nGithub Constanze Leichtweiß\nGithub Ivanna Marchesini\nGithub Christoph Kovacs\nGithub Enrico Wondra"
+  },
+  {
+    "objectID": "index.html#nächste-schritte",
+    "href": "index.html#nächste-schritte",
+    "title": "BIDS Projekt",
+    "section": "Nächste Schritte",
+    "text": "Nächste Schritte\n\n\nVorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks (Trainieren von Modellen)\nFühre die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.\nSpielt DNA-Methylierung eine Rolle?\n\n\nIvanna"
+  },
+  {
+    "objectID": "index.html#section",
+    "href": "index.html#section",
+    "title": "BIDS Projekt",
+    "section": "",
+    "text": "Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks→ Trainieren von Modellen\nFühre die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.→ Gibt es Unterschiede?\nSpielt DNA-Methylierung eine Rolle?\n\n\nIvanna"
   }
 ]
