@@ -1246,7 +1246,7 @@ save(
   plot_go_tram_up,
   plot_go_tram_down,
   file = "session.RData"
-)
+) 
 ```
 
 ```{r}
