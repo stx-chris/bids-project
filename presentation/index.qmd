@@ -63,12 +63,13 @@ flowchart TD
 Constanze
 :::
 
--   Aufstellen einer Nullhypothese H0: **kein Unterschied**
--   Gegenhypothese: Es gibt einen **Unterschied**
--   Negative Binominalverteilung zur Modellierung der Counts (Varianz besser abbildbar)
--   Fold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)
--   Logarithmierte Fold Change hat Vorteile beim Rechnen (Linear / Additiv)
--   Ergänzung zum log2FoldChange?
+- Statistischer Test zum Finden von Unterschieden:
+  1. Aufstellen einer Nullhypothese H0: **kein Unterschied**
+  2. Gegenhypothese: Es gibt einen **Unterschied**
+
+-  Negative Binominalverteilung zur Modellierung der Counts (Varianz besser abbildbar)
+- Fold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)
+- Log Fold Change hat Vorteile beim Rechnen (Linear / Additiv)
 
 ## Vorbereitung
 
@@ -76,8 +77,9 @@ Constanze
 Constanze
 :::
 
--   Erstellen einer Count-Matrix
--   Filtern der Daten
+1. Erstellen einer Count-Matrix
+2. Annotation der Counts mit Zusatzbezeichnungen
+3. Filtern der Daten
 
 ```{r}
 #| eval: false
@@ -89,8 +91,9 @@ sum(keep) # Behalte 18,198 Records für die Analyse (31%)
 sum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)
 ```
 
--   Erstellen des DeSeq2-Objekts
--   Transformieren und Normalisieren der Beobachtungen
+4. Erstellen des `DeSeq2`-Objekts für die weitere Analyse
+5. Transformieren und Normalisieren der Beobachtungen
+
 
 ## Count-Daten
 
@@ -110,6 +113,9 @@ plot_counts_trans
 ```{r}
 plot_counts_normtrans
 ```
+- Kaum Unterschiede zu nicht-normalisierten Daten
+- Gute Datenqualität
+
 :::
 
 # Explorative Analyse
@@ -143,7 +149,7 @@ plot_pca_2d
 -   Klare Separierbarkeit entlang PC1
 -   Stabile Kontrollgruppe
 -   Sora deutlich von DMSO unterschieden
--   Tram mit In-Sample Unterschieden (PC2)
+-   Tram deutlich heterogener (sollte untersucht werden)
 -   Problem: Misst nur linearen Zusammenhang
 
 ### 3D-PCA
@@ -194,8 +200,9 @@ plot_deg
 ```
 :::
 
--   Sorafenib ca. 3500 hoch- und runterregulierte Gene
--   Trametinib nur ca. 800
+- Sorafenib ca. 3500 hoch- und runterregulierte Gene
+- Trametinib nur ca. 800
+- Beide Wirkstoffe haben eher repressive Effekte auf die Genexpression
 
 ## Gemeinsam regulierte Gene
 
@@ -212,21 +219,27 @@ upset(fromList(up_list),
       order.by = "freq",
       mainbar.y.label = "Gemeinsame hochregulierte Gene",
       sets.x.label = "Gene pro Medikament",
-      text.scale = c(2, 2, 2, 2, 2, 2))
+      text.scale = c(1.5, 2, 2, 1.3, 2, 2))
 ```
 :::
+- Sorafenib wirkt deutlich stärker auf die Genexpression
+- Trametinib zeigt eine deutlich schwächere Wirkung
 
-### Herunterreguliert
+
+### Runterreguliert
 
 ::: no-stretch
 ```{r}
 upset(fromList(down_list), 
       order.by = "freq",
-      mainbar.y.label = "Gemeinsame herunterregulierte Gene",
+      mainbar.y.label = "Gemeinsame runterregulierte Gene",
       sets.x.label = "Gene pro Medikament",
-      text.scale = c(2, 2, 2, 2, 2, 2))
+      text.scale = c(1.5, 2, 2, 1.3, 2, 2))
 ```
 :::
+- Sorafenib wirkt deutlich stärker auf die Genexpression
+- Trametinib zeigt eine deutlich schwächere Wirkung
+
 :::::
 
 ## Signifikanz einzelner Gene
@@ -242,8 +255,8 @@ Chris
 plot_volcano_sora
 ```
 
--   ↑↑↑ CDX2, BMF, PCK1, CDKN1B<br>**Zellzyklushemmung, Apoptose, Differenzierung**
--   ↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br>**Tumorwachstumsmechanismen**
+-   ↑↑ CDX2, BMF, PCK1, CDKN1B<br>**Zellzyklushemmung, Förderung von Apoptose**
+-   ↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3<br>**Hemmung von onkogenen Programmen**
 
 ### Trametinib
 
@@ -251,7 +264,7 @@ plot_volcano_sora
 plot_volcano_tram
 ```
 
--   ↑↑↑ BMF, CYP1A, ASCL2<br>**Zellulärer Stress bzw. Schadensantworten**
+-   ↑↑ BMF, CYP1A, ASCL2<br>**Zellulärer Stress bzw. Schadensantworten**
 -   ↓↓↓ TNS4, IER3, FOSL1<br>**MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung**
 :::
 
@@ -325,25 +338,25 @@ Ivanna, Enrico
 :::
 
 ::: panel-tabset
-### Sora Up
+### Sora Hoch
 
 ```{r}
 plot_go_sora_up
 ```
 
-### Sora Down
+### Sora Runter
 
 ```{r}
 plot_go_sora_down
 ```
 
-### Tram Up
+### Tram Hoch
 
 ```{r}
 plot_go_tram_up
 ```
 
-### Tram Down
+### Tram Runter
 
 ```{r}
 plot_go_tram_down

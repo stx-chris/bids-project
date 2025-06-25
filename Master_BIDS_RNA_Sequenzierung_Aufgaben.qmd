@@ -700,12 +700,19 @@ plot_volcano_sora <- EnhancedVolcano(res_sora,
     legendPosition = 'right')
 plot_volcano_sora
 ```
+Interpretation: Wirkmechanismus (molekular):
+	•	Hemmung von Proliferation: über Runterregulation von MYC, FOSL1, CDK-Stimulation
+	•	Förderung von Apoptose: durch Hochregulation von BMF
+	•	Zellzyklus-Stillstand: über CDKN1B (p27)
+	•	Hemmung von Invasion/Metastasierung: über TNS4-Downregulation
+	•	mögliche metabolische Umstellung: über PCK1
+
 
 #### Volcano Plot: Trametinib vs DMSO
 
 ```{r}
 plot_volcano_tram <- EnhancedVolcano(res_tram,
-    lab = gene_reference$Symbol[match(rownames(res_tram), gene_reference$ENSEMBL)],
+    lab = gene_reference$Symbol[match(rownames(res_tram),as.character(gene_reference$ENSEMBL))],
     x = 'log2FoldChange',
     y = 'padj',
     pCutoff = 0.05,
@@ -716,9 +723,13 @@ plot_volcano_tram <- EnhancedVolcano(res_tram,
     subtitle = 'Differentiell exprimierte Gene',
     caption = 'log2FC > 1, FDR < 0.05',
     legendLabels = c('NS', 'Log2FC', 'FDR', 'FDR & Log2FC'),
-    legendPosition = 'right')
+    legendPosition = 'right') + 
+  coord_cartesian(xlim = c(-3, 3))
 plot_volcano_tram
 ```
+Interpretation:
+Trametinib dämpft gezielt MAPK-abhängige Onkogenexpression (FOSL1), blockiert Stress-Überlebenssignale (IER3) und hemmt Invasionsmechanismen (TNS4). Das entspricht exakt seiner pharmakologischen Wirkung als MEK-Inhibitor.
+
 
 ## Vergleich der beiden Medikamente
 
@@ -799,19 +810,23 @@ down_list <- list(
 ## Plots
 # Hochregulierte Gene
 plot_upset_up <- upset(fromList(up_list), 
+      sets = c("Trametinib", "Sorafenib"),
+      keep.order = TRUE,
       order.by = "freq",
       mainbar.y.label = "Gemeinsame hochregulierte Gene",
       sets.x.label = "Gene pro Medikament",
-      text.scale = c(2, 2, 2, 2, 2, 2)
+      text.scale = c(1.5, 2, 2, 1.3, 2, 2)
     )
 plot_upset_up
 
 # Runterregulierte Gene
 plot_upset_down <- upset(fromList(down_list), 
+      sets = c("Trametinib", "Sorafenib"),
+      keep.order = TRUE,
       order.by = "freq",
       mainbar.y.label = "Gemeinsame runterregulierte Gene",
       sets.x.label = "Gene pro Medikament",
-      text.scale = c(2, 2, 2, 2, 2, 2)
+      text.scale = c(1.5, 2, 2, 1.3, 2, 2)
     )
 plot_upset_down
 
