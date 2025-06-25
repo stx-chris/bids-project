@@ -1224,9 +1224,27 @@ plot_go_tram_down
 ```{r}
 #| cache: false
 
-exclude <- c("count_list", "df_norm", "df_raw", "sora_annot", "rld")
 save(
-  list = setdiff(ls(), exclude),
+  plot_counts_trans,
+  plot_counts_normtrans,
+  plot_scree,
+  plot_pca_2d,
+  plot_pca_3d,
+  plot_tsna,
+  plot_umap,
+  plot_deg,
+  up_list,
+  down_list,
+  plot_volcano_sora,
+  plot_volcano_tram,
+  gsea_plot_up,
+  gsea_dotplot_up,
+  gsea_plot_down,
+  gsea_dotplot_down,
+  plot_go_sora_up,
+  plot_go_sora_down,
+  plot_go_tram_up,
+  plot_go_tram_down,
   file = "session.RData"
 )
 ```
