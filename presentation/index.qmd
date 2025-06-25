@@ -19,6 +19,7 @@ library(UpSetR)
 # Einführung
 
 ## Sample Vorbereitung
+
 ::: aside
 Ivanna
 :::
@@ -26,9 +27,11 @@ Ivanna
 ![](../images/intro1.jpg){.nostretch fig-align="center" width="700px"}
 
 ## RNA-Seq Pipeline
+
 ![](../images/intro2.jpg){.nostretch fig-align="center" width="100%"}
 
 ## Wirkungsweise
+
 ::: aside
 Enrico
 :::
@@ -254,46 +257,66 @@ plot_volcano_tram
 
 # Gene Set Enrichment (GSE) and KEGG Pathway Analyse
 
-## Signalwege, hochreguliert
+## Signalwege
+
+::: aside
+Enrico
+:::
+
+::: panel-tabset
+### Sora Up
+![](images/sora_up.png)
+
+### Sora Down
+![](images/sora_down.png)
+
+### Tram Up
+![](images/tram_up.png)
+
+### Tram Down
+![](images/tram_down.png)
+:::
+
+
+## Gemeinsame Signalwege
 
 ::: aside
 Ivanna, Enrico
 :::
 
 ::: panel-tabset
-### Top 10
+### Top 10 Up
 
 ```{r}
 gsea_plot_up
 ```
 
-### Dot-Plot
+### Dot-Plot Up
 
 ```{r}
 gsea_dotplot_up
 ```
 :::
 
-## Signalwege, herunterreguliert
+## Gemeinsame Signalwege
 
 ::: aside
 Ivanna, Enrico
 :::
 
 ::: panel-tabset
-### Top 10
+### Top 10 Down
 
 ```{r}
 gsea_plot_down
 ```
 
-### Dot-Plot
+### Dot-Plot Down
 
 ```{r}
 gsea_dotplot_down
 ```
 :::
-
 
 ## Gene Ontology Analyse
 
@@ -301,55 +324,57 @@ gsea_dotplot_down
 Ivanna, Enrico
 :::
 
-:::: panel-tabset
-
+::: panel-tabset
 ### Sora Up
+
 ```{r}
 plot_go_sora_up
 ```
 
 ### Sora Down
+
 ```{r}
 plot_go_sora_down
 ```
 
 ### Tram Up
+
 ```{r}
 plot_go_tram_up
 ```
 
 ### Tram Down
+
 ```{r}
 plot_go_tram_down
 ```
-:::: 
+:::
 
 # Ideen
 
-##
+## 
 
 ::: aside
 Ivanna
 :::
 
-- Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks<br>**→ Trainieren von Modellen**
-- Führe die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.<br>**→ Gibt es Unterschiede?**
-- Spielt **DNA-Methylierung** eine Rolle?
-
+-   Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks<br>**→ Trainieren von Modellen**
+-   Führe die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.<br>**→ Gibt es Unterschiede?**
+-   Spielt **DNA-Methylierung** eine Rolle?
 
 ## Referenzen
 
 **Code Repositories**
 
-- <a href="https://github.com/CLeichtweiss/Systembiologie2025" data-preview-link>Github Constanze Leichtweiß</a>
-- <a href="https://github.com/ivimarchesini/bids-rna-sequencing" data-preview-link>Github Ivanna Marchesini</a>
-- <a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
-- <a href="https://github.com/en-wo/Systembiologie2025" data-preview-link>Github Enrico Wondra</a>
+-   <a href="https://github.com/CLeichtweiss/Systembiologie2025" data-preview-link>Github Constanze Leichtweiß</a>
+-   <a href="https://github.com/ivimarchesini/bids-rna-sequencing" data-preview-link>Github Ivanna Marchesini</a>
+-   <a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
+-   <a href="https://github.com/en-wo/Systembiologie2025" data-preview-link>Github Enrico Wondra</a>
 
 ::: aside
-- Qi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.
-- Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.
-- Li J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.
-- Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
-- Wall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944.
+-   Qi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.
+-   Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.
+-   Li J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.
+-   Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
+-   Wall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944.
 :::
