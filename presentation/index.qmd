@@ -387,11 +387,11 @@ Enrico
 ### durch Trametinib
 ⇓ MAPK-getriebene Proliferation (KRAS, MYC, E2F, TNFα/NF-κB, IL6/STAT3)
 
+⇓ Entzündungswege (akute Suppression von IL6/NF-κB)
+
 ⇑ P53-abhängige Stressantwort Zellzyklusarrest, p21, DNA-Reparatur aktiviert
 
 ⇑ Metabolische Stressantwort (Adipogenese)
-
-⇓ Entzündungswege (akute Suppression von IL6/NF-κB)
 
 ⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege
 
