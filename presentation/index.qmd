@@ -325,7 +325,7 @@ Enrico
 ## Gemeinsame Signalwege
 
 ::: aside
-Ivanna, Enrico
+Enrico
 :::
 
 ::: panel-tabset
@@ -345,7 +345,7 @@ gsea_dotplot_up
 ## Gemeinsame Signalwege
 
 ::: aside
-Ivanna, Enrico
+Enrico
 :::
 
 ::: panel-tabset
