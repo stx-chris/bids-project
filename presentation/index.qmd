@@ -363,6 +363,40 @@ plot_go_tram_down
 ```
 :::
 
+# Fazit
+
+## Transkriptionale Veränderungen
+
+::: aside
+Enrico
+:::
+
+### durch Sorafenib
+⇓ Zellzyklus und Proliferation (MYC, E2F, G2M, KRAS, mTORC1)
+
+⇓ Zellüberleben und Entzündungsreaktion (NF-κB-, IL2/STAT5-, TNFα-Signale)
+
+⇑ Apoptose und Tumorsuppression (p53)
+
+⇑ Metabolische Stressantworten: Adipogenese, Peroxisomen
+
+⇑ Xenobiotik-Metabolismus
+
+⇑ Interferon-Antwort (Hinweis auf Immunaktivierung oder zellulären Stress)
+
+### durch Trametinib
+⇓ MAPK-getriebene Proliferation (KRAS, MYC, E2F, TNFα/NF-κB, IL6/STAT3)
+
+⇑ P53-abhängige Stressantwort Zellzyklusarrest, p21, DNA-Reparatur aktiviert
+
+⇑ Metabolische Stressantwort (Adipogenese)
+
+⇓ Entzündungswege (akute Suppression von IL6/NF-κB)
+
+⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege
+
+
+
 # Ideen
 
 ## 
