@@ -36,6 +36,29 @@ Ivanna
 Enrico
 :::
 
+:::: panel-tabset
+
+### Sorafenib
+- Aktuell zugelassen bei Leber-, Nieren- und Schilddrüsenkarzinom
+- Multikinase-Inhibitor
+  - Hemmung von Serin-/Threonin-Kinasen (z. B. B-RAF, C-RAF)
+  - Hemmung von Rezeptor-Tyrosinkinasen (assoziiert mit verschiedenen Wachstumsfaktoren)
+
+- Wirkungen:
+  - ⇓ Zellvermehrung und –überleben
+  - ⇓ Angiogenese
+  - ⇑ Zelluläre Stressantwort 
+  - ⇑ Apoptose
+
+### Trametinib
+- Zugelassen bei Melanom und nicht-kleinzelligem Lungenkarzinom (mit BRAF-V600-Mutation)
+- Selektive Hemmung der Kinasen MEK1 und MEK2 ⇒ Hemmung des MAPK-Signalweges
+- Wirkung auf Tumorzellen ähnlich wie Sorafenib, aber selektiver 
+
+::::
+
+## Signalwege
+
 ```{mermaid}
 %%| fig-align: center
 flowchart TD
