@@ -28,6 +28,10 @@ Ivanna
 
 ## RNA-Seq Pipeline
 
+::: aside
+Ivanna
+:::
+
 ![](../images/intro2.jpg){.nostretch fig-align="center" width="100%"}
 
 ## Wirkungsweise
@@ -58,6 +62,10 @@ Enrico
 ::::
 
 ## Signalwege
+
+::: aside
+Enrico
+:::
 
 ```{mermaid}
 %%| fig-align: center
@@ -357,7 +365,7 @@ gsea_dotplot_down
 ## Gene Ontology Analyse
 
 ::: aside
-Ivanna, Enrico
+Ivanna
 :::
 
 ::: panel-tabset

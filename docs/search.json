@@ -11,7 +11,7 @@
     "href": "index.html#rna-seq-pipeline",
     "title": "BIDS Projekt",
     "section": "RNA-Seq Pipeline",
-    "text": "RNA-Seq Pipeline"
+    "text": "RNA-Seq Pipeline\n\n\n\n\n\n\n\nIvanna"
   },
   {
     "objectID": "index.html#wirkungsweise",
@@ -88,7 +88,7 @@
     "href": "index.html#gene-ontology-analyse",
     "title": "BIDS Projekt",
     "section": "Gene Ontology Analyse",
-    "text": "Gene Ontology Analyse\n\n\nSora HochSora RunterTram HochTram Runter\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna, Enrico"
+    "text": "Gene Ontology Analyse\n\n\nSora HochSora RunterTram HochTram Runter\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna"
   },
   {
     "objectID": "index.html#section",
@@ -137,7 +137,7 @@
     "href": "index.html#signalwege",
     "title": "BIDS Projekt",
     "section": "Signalwege",
-    "text": "Signalwege\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px"
+    "text": "Signalwege\n\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px\n\n\n\n\n\n\n\nEnrico"
   },
   {
     "objectID": "index.html#fazit",
