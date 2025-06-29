@@ -444,18 +444,19 @@ Ivanna
 
 
 1. **Integration mit Mutationsdaten** (Variant Calling)
-  - DEG-Analyse getrennt pro Gruppe und vergleichen
-  - Gibt es unterschiedliche DEGs zwischen mutierten und Wildtyp-Gruppen?
+
+   - DEG-Analyse getrennt pro Gruppe und vergleichen
+   - Gibt es unterschiedliche DEGs zwischen mutierten und Wildtyp-Gruppen?
 
 2. **Deep Learning für Drug Response Prediction**
-  - Nutze DEGs (oder Genexpressionsprofile insgesamt) kombiniert mit anderen Omics-Daten (Mutationen, etc.) als Input und trainiere neuronale Netze 
-  - Vorhersage von Therapieresistenzen/Sensitivitäten
+   - Nutze DEGs (oder Genexpressionsprofile insgesamt) kombiniert mit anderen Omics-Daten (Mutationen, etc.) als Input und trainiere neuronale Netze 
+   - Vorhersage von Therapieresistenzen/Sensitivitäten
 
 3. **Integration von DNA-Methylierung**
-  - Epigenetische Kontrolle beeinflusst Genexpression und kann DEGs erklären.
-  - Vergleiche Methylierungsmuster in Promotorregionen der DEGs
-  - Finde Gene mit korrelierter Hypermethylierung & Downregulation (Hinweis auf epigenetische Silenzierung)
-  - Nutzung von Tools wie `MethylKit` oder `minfi`.
+   - Epigenetische Kontrolle beeinflusst Genexpression und kann DEGs erklären.
+   - Vergleiche Methylierungsmuster in Promotorregionen der DEGs
+   - Finde Gene mit korrelierter Hypermethylierung & Downregulation (Hinweis auf epigenetische Silenzierung)
+   - Nutzung von Tools wie `MethylKit` oder `minfi`.
 
 # Vielen Dank für Eure Aufmerksamkeit!
 
