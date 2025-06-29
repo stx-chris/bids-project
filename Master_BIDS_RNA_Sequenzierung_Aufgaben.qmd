@@ -630,7 +630,7 @@ all_counts <- bind_rows(sora_counts, tram_counts)
 
 plot_deg <- ggplot(all_counts, aes(x = Comparison, y = n, fill = Regulation)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Verteilung der differenziell expremierten Gene", x = "Behandlungsgruppe", y = "Anzahl Gene") +
+  labs(title = "Anzahl signifikanter DEGs (FDR < 0.05)", x = "Behandlungsgruppe", y = "Anzahl Gene") +
   theme_minimal()
 plot_deg
  

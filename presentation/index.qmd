@@ -59,15 +59,15 @@ Enrico
 - Selektive Hemmung der Kinasen MEK1 und MEK2 ⇒ Hemmung des MAPK-Signalweges
 - Wirkung auf Tumorzellen ähnlich wie Sorafenib, aber selektiver 
 
+### Signalwege
+
+![](images/cell.jpg)
+
 ::::
 
-## Signalwege
-
-::: aside
-Enrico
-:::
-
 ```{mermaid}
+%%| echo: false
+%%| eval: false
 %%| fig-align: center
 flowchart TD
     RTK["Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)"]
@@ -108,22 +108,12 @@ Constanze
 Constanze
 :::
 
-1. Erstellen einer Count-Matrix
-2. Annotation der Counts mit Zusatzbezeichnungen
-3. Filtern der Daten
-
-```{r}
-#| eval: false
-#| echo: true
-# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt
-
-keep <- rowSums(counts(dds) >= 10) >= 2
-sum(keep) # Behalte 18,198 Records für die Analyse (31%)
-sum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)
-```
-
+1. Erstellen einer Count-Matrix und Annotation mit Zusatzbezeichnungen
+3. Filtern der Daten (69% werden verworfen, 31% behalten)
 4. Erstellen des `DeSeq2`-Objekts für die weitere Analyse
-5. Transformieren und Normalisieren der Beobachtungen
+5. Transformieren und **Normalisieren** der Beobachtungen zur Beseitigung der technischen Variablilität und Vergleichbarkeit der Genexpressionsniveaus zwischen Proben  (Gen-Länge vs. Sequenziertiefe):
+![](images/normalization.jpg)
+
 
 
 ## Count-Daten
@@ -231,9 +221,11 @@ plot_deg
 ```
 :::
 
-- Sorafenib ca. 3500 hoch- und runterregulierte Gene
-- Trametinib nur ca. 800
-- Beide Wirkstoffe haben eher repressive Effekte auf die Genexpression
+- Sorafenib induziert deutlich stärkere genomweite Antwort im Vergleich zu Trametinib.
+- Über 3500 Gene sind durch Sorafenib signifikant verändert (davon mehrheitlich herunterreguliert).
+- Trametinib führt nur zu moderaten Veränderungen mit deutlich weniger diff. expr. Genen.
+
+→ Sorafenib hat breiteren Einfluss auf zelluläre Signalwege und Genexpression.
 
 ## Gemeinsam regulierte Gene
 
@@ -362,40 +354,6 @@ gsea_dotplot_down
 ```
 :::
 
-## Gene Ontology Analyse
-
-::: aside
-Ivanna
-:::
-
-::: panel-tabset
-### Sora Hoch
-
-```{r}
-plot_go_sora_up
-```
-
-### Sora Runter
-
-```{r}
-plot_go_sora_down
-```
-
-### Tram Hoch
-
-```{r}
-plot_go_tram_up
-```
-
-### Tram Runter
-
-```{r}
-plot_go_tram_down
-```
-:::
-
-# Fazit
-
 ## Transkriptionale Veränderungen
 
 ::: aside
@@ -427,29 +385,88 @@ Enrico
 ⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege
 
 
-
-# Ideen
-
-## 
+## Gene Ontology Analyse
 
 ::: aside
 Ivanna
 :::
 
--   Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks<br>**→ Trainieren von Modellen**
--   Führe die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.<br>**→ Gibt es Unterschiede?**
--   Spielt **DNA-Methylierung** eine Rolle?
+::: panel-tabset
+### Sorafenib ⇑
+
+```{r}
+plot_go_sora_up
+```
+- Stoffwechselprozesse: Lipidabbau, Phospholipid- und Fettsäuremetabolismus
+- Oxidativer Stress und Fremdstoffe (Xenobiotika).
+- Autophagie, Insulinantwort und Proteinabbau.
+- Metabolische Reprogrammierung und **aktiviert zelluläre Schutzmechanismen**
+
+
+### Sorafenib ⇓
+
+```{r}
+plot_go_sora_down
+```
+- Gezielte Hemmung von Genen der Proteinbiosynthese
+- Weitere Prozesse:  Nuklearer Transport, mRNA-Splicing, Kinaseaktivität, Apoptose-Regulation
+- **Sorafenib hemmt zentrale Zellfunktionen** (Translation, Signalweiterleitung, Zellwachstum), unterstützt seine antitumorale Wirkung
+
+
+### Trametinib ⇑
+
+```{r}
+plot_go_tram_up
+```
+- Signifikante Anreicherung in Prozessen der Organ- und Systementwicklung
+- Beeinflusst auch intrazelluläre Rezeptorsignalwege, Vitaminantwort, Differenzierung vaskulärer glatter Muskelzellen
+- **Trametinib beeinflusst zentrale Entwicklungs- und Regulationsmechanismen** in Geweben
+
+
+
+### Trametinib ⇓
+
+```{r}
+plot_go_tram_down
+```
+- Beeinflussung von Phosphorylierung und Kinaseaktivität
+- Verminderte Epithelzell-Proliferation, Apoptose-Regulation, Proteintransport in den Zellkern
+- **Trametinib hemmt zentrale zelluläre & entwicklungsbezogene Prozesse** und trägt zur Tumorwachstumshemmung bei
+
+
+:::
+
+## Weiterführende Analysen
+
+::: aside
+Ivanna
+:::
+
+
+1. **Integration mit Mutationsdaten** (Variant Calling)
+  - DEG-Analyse getrennt pro Gruppe und vergleichen
+  - Gibt es unterschiedliche DEGs zwischen mutierten und Wildtyp-Gruppen?
+
+2. **Deep Learning für Drug Response Prediction**
+  - Nutze DEGs (oder Genexpressionsprofile insgesamt) kombiniert mit anderen Omics-Daten (Mutationen, etc.) als Input und trainiere neuronale Netze 
+  - Vorhersage von Therapieresistenzen/Sensitivitäten
+
+3. **Integration von DNA-Methylierung**
+  - Epigenetische Kontrolle beeinflusst Genexpression und kann DEGs erklären.
+  - Vergleiche Methylierungsmuster in Promotorregionen der DEGs
+  - Finde Gene mit korrelierter Hypermethylierung & Downregulation (Hinweis auf epigenetische Silenzierung)
+  - Nutzung von Tools wie `MethylKit` oder `minfi`.
 
 # Vielen Dank für Eure Aufmerksamkeit!
 
-## Referenzen
-
-**Code Repositories**
+<br><br><br>**Code Repositories**
 
 -   <a href="https://github.com/CLeichtweiss/Systembiologie2025" data-preview-link>Github Constanze Leichtweiß</a>
 -   <a href="https://github.com/ivimarchesini/bids-rna-sequencing" data-preview-link>Github Ivanna Marchesini</a>
 -   <a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
 -   <a href="https://github.com/en-wo/Systembiologie2025" data-preview-link>Github Enrico Wondra</a>
+
+## Referenzen
 
 ::: aside
 -   Qi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.
@@ -457,4 +474,6 @@ Ivanna
 -   Li J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.
 -   Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
 -   Wall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944.
+-   Ciaran Evans, Johanna Hardin, Daniel M Stoebel, Selecting between-sample RNA-Seq normalization methods from the perspective of their assumptions, Briefings in Bioinformatics, Volume 19, Issue 5, September 2018, Pages 776–792, https://doi.org/10.1093/bib/bbx008
+
 :::
