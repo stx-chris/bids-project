@@ -7,7 +7,6 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Präsentation Gruppe 3
 
 format: 
   revealjs:
@@ -20,6 +19,10 @@ format:
     smaller: true
     scrollable: true
     embed-resources: true
+    title-slide-attributes:
+      data-background-image: images/title.jpg
+      data-background-size: contain
+
 lang: de
 
 

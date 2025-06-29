@@ -2,70 +2,70 @@
   {
     "objectID": "index.html#sample-vorbereitung",
     "href": "index.html#sample-vorbereitung",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Sample Vorbereitung",
     "text": "Sample Vorbereitung\n\n\n\n\n\n\n\nIvanna"
   },
   {
     "objectID": "index.html#rna-seq-pipeline",
     "href": "index.html#rna-seq-pipeline",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "RNA-Seq Pipeline",
     "text": "RNA-Seq Pipeline\n\n\n\n\n\n\n\nIvanna"
   },
   {
     "objectID": "index.html#wirkungsweise",
     "href": "index.html#wirkungsweise",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Wirkungsweise",
     "text": "Wirkungsweise\n\n\nSorafenibTrametinib\n\n\n\nAktuell zugelassen bei Leber-, Nieren- und Schilddrüsenkarzinom\nMultikinase-Inhibitor\n\nHemmung von Serin-/Threonin-Kinasen (z. B. B-RAF, C-RAF)\nHemmung von Rezeptor-Tyrosinkinasen (assoziiert mit verschiedenen Wachstumsfaktoren)\n\nWirkungen:\n\n⇓ Zellvermehrung und –überleben\n⇓ Angiogenese\n⇑ Zelluläre Stressantwort\n⇑ Apoptose\n\n\n\n\n\nZugelassen bei Melanom und nicht-kleinzelligem Lungenkarzinom (mit BRAF-V600-Mutation)\nSelektive Hemmung der Kinasen MEK1 und MEK2 ⇒ Hemmung des MAPK-Signalweges\nWirkung auf Tumorzellen ähnlich wie Sorafenib, aber selektiver\n\n\n\n\n\nEnrico"
   },
   {
     "objectID": "index.html#ziel-unterschiede-in-der-genexpression-finden",
     "href": "index.html#ziel-unterschiede-in-der-genexpression-finden",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Ziel:Unterschiede in der Genexpression finden",
     "text": "Ziel:Unterschiede in der Genexpression finden\n\n\nStatistischer Test zum Finden von Unterschieden:\n\nAufstellen einer Nullhypothese H0: kein Unterschied\nGegenhypothese: Es gibt einen Unterschied\n\nNegative Binominalverteilung zur Modellierung der Counts (Varianz besser abbildbar)\nFold Change = Wert Bedingung (Sora) / Wert Bedingung (DMSO)\nLog Fold Change hat Vorteile beim Rechnen (Linear / Additiv)\n\n\nConstanze"
   },
   {
     "objectID": "index.html#vorbereitung",
     "href": "index.html#vorbereitung",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Vorbereitung",
     "text": "Vorbereitung\n\n\nErstellen einer Count-Matrix\nAnnotation der Counts mit Zusatzbezeichnungen\nFiltern der Daten\n\n\n# Filter: min. 2 Spalten mit je mehr als 10 Counts benötigt\n\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 2\nsum(keep) # Behalte 18,198 Records für die Analyse (31%)\nsum(dim(count_matrix)[1]-sum(keep)) # Verwerfe 39,575 Records (69%)\n\n\nErstellen des DeSeq2-Objekts für die weitere Analyse\nTransformieren und Normalisieren der Beobachtungen\n\n\nConstanze"
   },
   {
     "objectID": "index.html#count-daten",
     "href": "index.html#count-daten",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Count-Daten",
     "text": "Count-Daten\n\n\nNur transformiertTransformiert und normalisiert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKaum Unterschiede zu nicht-normalisierten Daten\nGute Datenqualität\n\n\n\n\n\nConstanze"
   },
   {
     "objectID": "index.html#strukturfindung",
     "href": "index.html#strukturfindung",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Strukturfindung",
     "text": "Strukturfindung\n\n\nScree Plot2D-PCA3D-PCAt-SNAUMAP\n\n\nOptimale Anzahl Komponenten für PCA\n\n\n\n\n\n\n\n\n\n\n\nNur Top 500 Gene miteinbezogen\n2-3 Komponenten optimal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKlare Separierbarkeit entlang PC1\nStabile Kontrollgruppe\nSora deutlich von DMSO unterschieden\nTram deutlich heterogener (sollte untersucht werden)\nProblem: Misst nur linearen Zusammenhang\n\n\n\n\n\n\n\n\n\n\nPC3 erklärt nur knapp 7% der Gesamtvarianz\nKeine bessere Separabilität\n\n\n\nt-distributed Stochastic Neighbor Embedding\n\n\n\n\n\n\n\n\n\n\nMisst lokalen nicht-linearen Zusammenhang\nDeutliche Cluster der drei Treatments\nTrametinib kohärenter als bei PCA\n\n\n\nUniform Manifold Approximation and Projection\n\n\n\n\n\n\n\n\n\n\nMisst lokalen und globalen Zusammenhang\n“Gradientenstruktur” DMSO → Tram → Sora\nProblem: Zu wenige Samples\n\n\n\n\n\nChris"
   },
   {
     "objectID": "index.html#signifikant-regulierte-gene",
     "href": "index.html#signifikant-regulierte-gene",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Signifikant regulierte Gene",
     "text": "Signifikant regulierte Gene\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib ca. 3500 hoch- und runterregulierte Gene\nTrametinib nur ca. 800\nBeide Wirkstoffe haben eher repressive Effekte auf die Genexpression\n\n\nConstanze"
   },
   {
     "objectID": "index.html#gemeinsam-regulierte-gene",
     "href": "index.html#gemeinsam-regulierte-gene",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Gemeinsam regulierte Gene",
     "text": "Gemeinsam regulierte Gene\n\n\nHochreguliertRunterreguliert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib wirkt deutlich stärker auf die Genexpression\nTrametinib zeigt eine deutlich schwächere Wirkung\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorafenib wirkt deutlich stärker auf die Genexpression\nTrametinib zeigt eine deutlich schwächere Wirkung\n\n\n\n\n\nConstanze"
   },
   {
     "objectID": "index.html#signifikanz-einzelner-gene",
     "href": "index.html#signifikanz-einzelner-gene",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Signifikanz einzelner Gene",
     "text": "Signifikanz einzelner Gene\n\n\nSorafenibTrametinib\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑ CDX2, BMF, PCK1, CDKN1BZellzyklushemmung, Förderung von Apoptose\n↓↓↓ TNS4, MYC, FOSL1, SPRY4, IER3Hemmung von onkogenen Programmen\n\n\n\n\n\n\n\n\n\n\n\n\n\n↑↑ BMF, CYP1A, ASCL2Zellulärer Stress bzw. Schadensantworten\n↓↓↓ TNS4, IER3, FOSL1MAPK-assoziierte Proliferation, Stressantworten und zelluläre Bewegung\n\n\n\n\n\nChris"
   },
@@ -86,21 +86,21 @@
   {
     "objectID": "index.html#gene-ontology-analyse",
     "href": "index.html#gene-ontology-analyse",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Gene Ontology Analyse",
     "text": "Gene Ontology Analyse\n\n\nSora HochSora RunterTram HochTram Runter\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIvanna"
   },
   {
     "objectID": "index.html#section",
     "href": "index.html#section",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "",
     "text": "Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks→ Trainieren von Modellen\nFühre die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.→ Gibt es Unterschiede?\nSpielt DNA-Methylierung eine Rolle?\n\n\nIvanna"
   },
   {
     "objectID": "index.html#referenzen",
     "href": "index.html#referenzen",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Referenzen",
     "text": "Referenzen\nCode Repositories\n\nGithub Constanze Leichtweiß\nGithub Ivanna Marchesini\nGithub Christoph Kovacs\nGithub Enrico Wondra\n\n\n\n\n\n\nQi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.\nDobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.\nLi J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.\nKoch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner’s Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.\nWall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944."
   },
@@ -114,14 +114,14 @@
   {
     "objectID": "index.html#gemeinsame-signalwege",
     "href": "index.html#gemeinsame-signalwege",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Gemeinsame Signalwege",
     "text": "Gemeinsame Signalwege\n\n\nTop 10 UpDot-Plot Up\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEnrico"
   },
   {
     "objectID": "index.html#gemeinsame-signalwege-1",
     "href": "index.html#gemeinsame-signalwege-1",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Gemeinsame Signalwege",
     "text": "Gemeinsame Signalwege\n\n\nTop 10 DownDot-Plot Down\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEnrico"
   },
@@ -135,7 +135,7 @@
   {
     "objectID": "index.html#signalwege",
     "href": "index.html#signalwege",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Signalwege",
     "text": "Signalwege\n\n\n\n\n\n\nflowchart TD\n    RTK[\"Rezeptor-Tyrosinkinase (zB EGFR, VEGFR)\"]\n    RAS[\"RAS (GTPase)\"]\n    RAF[\"RAF-Kinase (inkl. BRAF)\"]\n    MEK[\"MEK1/2-Kinase\"]\n    ERK[\"ERK1/2-Kinase\"]\n    PRO[\"Zellproliferation und Überleben\"]\n\n    RTK --&gt; RAS --&gt; RAF --&gt; MEK --&gt; ERK --&gt; PRO\n\n    SORA[\"**Sorafenib** (RAF-Hemmer)\"] -.-&gt; RAF\n    TRAM[\"**Trametinib** (MEK-Hemmer)\"] -.-&gt; MEK\n\n    style SORA fill:yellow,stroke:orange,stroke-width:2px\n    style TRAM fill:aqua,stroke:blue,stroke-width:2px\n\n\n\n\n\n\n\nEnrico"
   },
@@ -149,7 +149,7 @@
   {
     "objectID": "index.html#transkriptionale-veränderungen",
     "href": "index.html#transkriptionale-veränderungen",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Transkriptionale Veränderungen",
     "text": "Transkriptionale Veränderungen\n\ndurch Sorafenib\n⇓ Zellzyklus und Proliferation (MYC, E2F, G2M, KRAS, mTORC1)\n⇓ Zellüberleben und Entzündungsreaktion (NF-κB-, IL2/STAT5-, TNFα-Signale)\n⇑ Apoptose und Tumorsuppression (p53)\n⇑ Metabolische Stressantworten: Adipogenese, Peroxisomen\n⇑ Xenobiotik-Metabolismus\n⇑ Interferon-Antwort (Hinweis auf Immunaktivierung oder zellulären Stress)\ndurch Trametinib\n⇓ MAPK-getriebene Proliferation (KRAS, MYC, E2F, TNFα/NF-κB, IL6/STAT3)\n⇓ Entzündungswege (akute Suppression von IL6/NF-κB)\n⇑ P53-abhängige Stressantwort Zellzyklusarrest, p21, DNA-Reparatur aktiviert\n⇑ Metabolische Stressantwort (Adipogenese)\n⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege\n\nEnrico"
   },
@@ -163,8 +163,15 @@
   {
     "objectID": "index.html#signalwege-1",
     "href": "index.html#signalwege-1",
-    "title": "BIDS Projekt",
+    "title": " ",
     "section": "Signalwege",
     "text": "Signalwege\n\n\nSora UpSora DownTram UpTram Down\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEnrico"
+  },
+  {
+    "objectID": "index2.html#sample-vorbereitung",
+    "href": "index2.html#sample-vorbereitung",
+    "title": "BIDS Projekt",
+    "section": "Sample Vorbereitung",
+    "text": "Sample Vorbereitung\n\n\n\n\n\n\n\n\n\nIvanna"
   }
 ]

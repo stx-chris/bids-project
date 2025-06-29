@@ -1,11 +1,11 @@
 ---
-title: BIDS Projekt
-subtitle: Gruppe 3
-author:
-  - Constanze Leichtweiß
-  - Ivanna Marchesini
-  - Christoph Kovacs
-  - Enrico Wondra
+title: "&nbsp;"
+#subtitle: Gruppe 3
+#author:
+#  - Constanze Leichtweiß
+#  - Ivanna Marchesini
+#  - Christoph Kovacs
+#  - Enrico Wondra
 #execute:
 #  cache: false
 ---
@@ -439,6 +439,8 @@ Ivanna
 -   Vorhersage der Drug Response von Tumoren anhand integrierter genomischer Profile mittels Deep Neural Networks<br>**→ Trainieren von Modellen**
 -   Führe die DEG-Analyse getrennt für Mutanten- und Wildtyp-Gruppen durch.<br>**→ Gibt es Unterschiede?**
 -   Spielt **DNA-Methylierung** eine Rolle?
+
+# Vielen Dank für Eure Aufmerksamkeit!
 
 ## Referenzen
 
