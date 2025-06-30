@@ -17,14 +17,17 @@ execute:
   error: false
 ---
 
-## Code Repository
+::: {.callout-important icon=false}
+## Disclaimer
 
-<a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
+Die Datenverarbeitung, -analyse und Interpretation erfolgte in Zusammenarbeit mit Constanze Leichtweiß, Ivanna Marchesini und Enrico Wondra (Gruppe 3). 
 
+Für die Analyse und Verifizierung wurde stellenweise künstliche Intelligenz eingesetzt.
+:::
 
-# Disclaimer
+# Code Repository
 
-Die Datenverarbeitung, -analyse und Interpretation erfolgte teilweise in Zusammenarbeit mit Constanze Leichtweiß, Ivanna Marchesini und Enrico Wondra (Gruppe 3).
+Der Quellcode zu dieser Arbeit ist hier hinterlegt: <a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
 
 
 # Einführung
@@ -299,12 +302,15 @@ dds$group <- relevel(dds$group, ref = 'DMSO')
 
 # Vorfilter
 keep <- rowSums(counts(dds) >= 10) >= 2
-sum(keep) # keeping 18,198 records
-sum(dim(count_matrix)[1]-sum(keep)) # discarding 39,575 records
+sum(keep) # keeping 15,805 records
+sum(dim(count_matrix)[1]-sum(keep)) # discarding 41,968 records
 dds <- dds[keep,] 
 ```
 
-Es verbleiben 18.198 Gene für die weitere Analyse. Als Filterkriterium wurden nur diejenigen Gene behalten, bei denen in mindestens 2 Samples mindestens 10 Reads vorhanden sind. Dabei wurden 39.575 Records herausgefiltert.
+::: {.callout-important icon=false}
+## Interpretation
+Es verbleiben 15.805 Gene für die weitere Analyse. Als Filterkriterium wurden nur diejenigen Gene behalten, bei denen in mindestens 2 Samples mindestens 10 Reads vorhanden sind. Dabei wurden 41.968 Records herausgefiltert.
+:::
 
 ### Normalisierung und Differentielle Expression
 
@@ -329,14 +335,19 @@ rlog_matrix <- assay(rld)
 head(rlog_matrix)
 ```
 
+::: {.callout-important icon=false}
+## Interpretation
 Modellanpassung ist gelungen, da:
+
 - die rote Linie gut durch die Punktwolke läuft,
 - keine massiven systematischen Abweichungen sichtbar sind.
 - Ausreißer-Dispersionswerte (blaue Kreise) ausreichend angepasst sind (um stabilere Tests zu ermöglichen)
 
 Nach Anwendung von Shrinkage (blaue Punkte) wurden viele extreme log₂ Fold Changes bei niedrig exprimierten Genen korrigiert.
+
 - Die geschrumpften Effekte sind robuster und besser interpretierbar.
 - Gene mit hohen Counts und stabil hohen oder niedrigen log₂ Fold Changes bleiben auch nach Shrinkage deutlich sichtbar.
+:::
 
 ### QC Plot vor und nach der Normalisierung
 
@@ -412,11 +423,14 @@ plot_counts_normtrans
 ```
 
 	
+::: {.callout-important icon=false}
+## Interpretation
 Die transformierten und normiert+transformierten Verteilungen sind nun nahezu identisch zwischen den Proben:
+
 - Die Mediane und die Verteilungen der Counts sind angeglichen worden.
 - Die Normalisierung war erfolgreich, d. h. systematische Unterschiede zwischen den Proben (z. B. durch Sequenziertiefe) wurden entfernt.
 - Erst jetzt sind verlässliche Vergleiche zwischen Bedingungen (DMSO, Sorafenib, Trametinib) möglich.
-
+:::
 
 ## PCA - Principal Component Analysis
 
@@ -593,6 +607,9 @@ plot_umap <- ggplot(umap_df, aes(x = V1, y = V2, color = group, label = sample))
 plot_umap
 ```
 
+::: {.callout-important icon=false}
+## Interpretation
+
 **Scree Plot**
 
 Der gezeigte kumulative Scree-Plot stellt dar, wie viel Varianz durch die sukzessive Hinzunahme von Hauptkomponenten (Principal Components, PCs) in einer PCA erklärt wird. Man erkennt, dass die ersten 3 Hauptkomponenten ausreichen, um den Großteil der Varianz (>90 %) der Daten zu erfassen. Der Zugewinn von 2 auf 3 Komponenten ist jedoch gering, daher werden 2 und 3 Dimensionen betrachtet. 
@@ -601,7 +618,7 @@ Der gezeigte kumulative Scree-Plot stellt dar, wie viel Varianz durch die sukzes
 
 Im 2-dimensionalen PCA-Fall kann man bereits eine klare Separarierung der drei Treatments in der ersten Hauptkomponente (PC1) erkennen. Zusätzlich sind DMSO und Soratenib jeweils schön zusammen gruppiert. Einzig bei Trametinib ist kein deutlicher Cluster erkennbar, was auf eine höhere In-Sample Varianz hindeuten könnte.
 
-Die 3-Komponenten-PCA bringt keine neuen Erkenntnisse
+Die dritte Hauptkomponente PC3 bringt für die Interpration im konkreten Fall keinen Zugewinn.
 
 **MDS**
 
@@ -622,7 +639,7 @@ In der UMAP liegen die Cluster deutlich weiter auseinander, jedoch ist auch hier
 **Fazit**
 
 Die Dimensionsreduktionsanalyse hat ergeben, dass die einzelnen Samples von DMSO, Trametnib und Sorafenib homogene Cluster bilden und daher für die weitere Analyse gut geeignet sind.
-
+:::
 
 
 ## Differentielle Expressions Analyse
@@ -700,7 +717,11 @@ plot_deg
  
 ```
 
+::: {.callout-important icon=false}
+## Interpretation
+
 Man erkennt, dass Sorafenib mit rund 2000 hoch- und 500 runterregulierten Genen deutlich mehr Wirkung erzielt als Trametinib mit rund 1500 hoch- und 200 runterregulierten Genen
+:::
 
 ### Identifizierte DEGs als Tabellen
 ```{r}
@@ -744,15 +765,18 @@ plot_volcano_sora <- EnhancedVolcano(res_sora,
     legendPosition = 'right')
 plot_volcano_sora
 ```
-**Interpretation**
+
+::: {.callout-important icon=false}
+## Interpretation
 
 Wirkmechanismus (molekular):
+
 - Hemmung von Proliferation: über Runterregulation von MYC, FOSL1, CDK-Stimulation
 - Förderung von Apoptose: durch Hochregulation von BMF
 - Zellzyklus-Stillstand: über CDKN1B (p27)
 - Hemmung von Invasion/Metastasierung: über TNS4-Downregulation
 - mögliche metabolische Umstellung: über PCK1
-
+:::
 
 #### Volcano Plot: Trametinib vs DMSO
 
@@ -773,9 +797,11 @@ plot_volcano_tram <- EnhancedVolcano(res_tram,
   coord_cartesian(xlim = c(-3, 3))
 plot_volcano_tram
 ```
-**Interpretation**
+::: {.callout-important icon=false}
+## Interpretation
 
 Trametinib dämpft gezielt MAPK-abhängige Onkogenexpression (FOSL1), blockiert Stress-Überlebenssignale (IER3) und hemmt Invasionsmechanismen (TNS4). Das entspricht exakt seiner pharmakologischen Wirkung als MEK-Inhibitor.
+:::
 
 
 ## Vergleich der beiden Medikamente
@@ -852,7 +878,11 @@ plot_upset_up <- upset(fromList(up_list),
 plot_upset_up
 ```
 
+::: {.callout-important icon=false}
+## Interpretation
+
 Obschon Sorafenib und Trametinib eine hohe Anzahl gemeinsam hochregulierter Gene aufweisen (219), ist die isolierte Wirkung von Sorafenib mit 1213 Genen deutlich höher als von Trametinib alleine (12).
+:::
 
 #### Durch beide Medikamente runter-regulierte Gene
 
@@ -894,7 +924,11 @@ up_sets[["Sorafenib-Trametinib"]]
 down_sets[["Sorafenib-Trametinib"]]
 ```
 
+::: {.callout-important icon=false}
+## Interpretation
+
 Bei der Runterregulierung zeigt sich ein ähnliches Bild wie zuvor. Mit 486 gemeinsam runterregulierten Genen teilen Sorafenib und Trametinib einen guten Teil ihrer Wirkung. Doch Sorafenib ist mit 1437 isoliert runterregulierten Genen deutlich wirkungsstärker als Trametinib mit nur 29 isoliert runterregulierten Genen
+:::
 
 **MSigDB**
 
@@ -1151,7 +1185,8 @@ gsea_dotplot_down <- ggplot(gsea_down_plot, aes(x = Ratio, y = Term)) +
 gsea_dotplot_down
 ```
 
-**Interpretation**
+::: {.callout-important icon=false}
+## Interpretation
 
 **Transkriptionelle Veränderungen durch Sorafenib**
 
@@ -1169,10 +1204,17 @@ gsea_dotplot_down
 - ⇑ P53-abhängige Stressantwort Zellzyklusarrest, p21, DNA-Reparatur aktiviert
 - ⇑ Metabolische Stressantwort (Adipogenese)
 - ⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege
+:::
 
 
 
-#### Gene Ontology Analysis
+#### Gene Ontology Analyse
+
+::: {.callout-important icon=false}
+## Beschreibung
+Mithilfe einer Gene Ontology (GO) Analyse untersuchen wir die biologischen Funktionen, Prozesse und zellulären Komponenten, mit denen die Gene des Datensets assoziiert ist. Ziel ist es, zu verstehen, welche biologischen Themen überrepräsentiert sind — also funktionelle Anreicherungen (enrichments) zu identifizieren.
+:::
+
 
 ```{r GO}
 # DEG analysis with lfcShrink for more accurate log2FC
@@ -1250,12 +1292,14 @@ plot_go_sora_up <- barplot(
 plot_go_sora_up
 ```
 
-**Interpretation**
+::: {.callout-important icon=false}
+## Interpretation
 
 - Stoffwechselprozesse: Lipidabbau, Phospholipid- und Fettsäuremetabolismus
 - Oxidativer Stress und Fremdstoffe (Xenobiotika).
 - Autophagie, Insulinantwort und Proteinabbau.
 - Metabolische Reprogrammierung und aktiviert zelluläre Schutzmechanismen
+:::
 
 **Barplots der GO Ergebnisse für Sorafenib Down-Regulierte Gene:**
 
@@ -1298,11 +1342,13 @@ plot_go_tram_up <- barplot(
   )
 plot_go_tram_up
 ```
-**Interpretation**
+::: {.callout-important icon=false}
+## Interpretation
 
 - Signifikante Anreicherung in Prozessen der Organ- und Systementwicklung
 - Beeinflusst auch intrazelluläre Rezeptorsignalwege, Vitaminantwort, Differenzierung vaskulärer glatter Muskelzellen
 - Trametinib beeinflusst zentrale Entwicklungs- und Regulationsmechanismen in Geweben
+:::
 
 
 **Barplots der GO Ergebnisse für Trametinib Down-Regulierte Gene:**
@@ -1324,11 +1370,13 @@ plot_go_tram_down
 ```
 
 
-**Interpretation**
+::: {.callout-important icon=false}
+## Interpretation
 
 - Beeinflussung von Phosphorylierung und Kinaseaktivität
 - Verminderte Epithelzell-Proliferation, Apoptose-Regulation, Proteintransport in den Zellkern
 - Trametinib hemmt zentrale zelluläre & entwicklungsbezogene Prozesse und trägt zur Tumorwachstumshemmung bei
+:::
 
 
 ## Referenzen
