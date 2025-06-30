@@ -39,7 +39,7 @@
     "href": "index.html#count-daten",
     "title": " ",
     "section": "Count-Daten",
-    "text": "Count-Daten\n\n\nRoh-CountsNur transformiertTransformiert und normalisiert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKaum Unterschiede zu nicht-normalisierten Daten\nGute Datenqualität\n\n\n\n\n\nConstanze"
+    "text": "Count-Daten\n\n\nRoh-CountsNur transformiertTransformiert und normalisiert\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMediane und Verteilungen der Counts sind angeglichen\nSystematische Unterschiede zwischen den Proben wurden entfernt\nVerlässliche Vergleiche zwischen DMSO, Sorafenib, Trametinib möglich\n\n\n\n\n\nConstanze"
   },
   {
     "objectID": "index.html#strukturfindung",

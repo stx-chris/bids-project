@@ -145,8 +145,9 @@ plot_counts_trans
 #| fig-align: center
 plot_counts_normtrans
 ```
-- Kaum Unterschiede zu nicht-normalisierten Daten
-- Gute Datenqualität
+- Mediane und Verteilungen der Counts sind angeglichen
+- Systematische Unterschiede zwischen den Proben wurden entfernt
+- Verlässliche Vergleiche zwischen DMSO, Sorafenib, Trametinib möglich
 
 :::
 
