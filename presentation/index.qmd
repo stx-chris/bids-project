@@ -127,12 +127,14 @@ Constanze
 ### Nur transformiert
 
 ```{r}
+#| fig-align: center
 plot_counts_trans
 ```
 
 ### Transformiert und normalisiert
 
 ```{r}
+#| fig-align: center
 plot_counts_normtrans
 ```
 - Kaum Unterschiede zu nicht-normalisierten Daten

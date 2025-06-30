@@ -32,7 +32,7 @@
     "href": "index.html#vorbereitung",
     "title": " ",
     "section": "Vorbereitung",
-    "text": "Vorbereitung\n\n\nErstellen einer Count-Matrix und Annotation mit Zusatzbezeichnungen\nFiltern der Daten (69% werden verworfen, 31% behalten)\nErstellen des DeSeq2-Objekts für die weitere Analyse\nTransformieren und Normalisieren der Beobachtungen zur Beseitigung der technischen Variablilität und Vergleichbarkeit der Genexpressionsniveaus zwischen Proben (Gen-Länge vs. Sequenziertiefe): \n\n\nConstanze"
+    "text": "Vorbereitung\n\n\nErstellen einer Count-Matrix und Annotation mit Zusatzbezeichnungen\nFiltern der Daten (69% werden verworfen, 31% behalten)\nErstellen des DeSeq2-Objekts für die weitere Analyse\nTransformieren und Normalisieren der Beobachtungen: In-Sample-Biases (Genlänge) vs. Between-Sample-Biases (Sequenziertiefe) \n\n\nConstanze"
   },
   {
     "objectID": "index.html#count-daten",
