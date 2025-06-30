@@ -24,7 +24,7 @@ library(UpSetR)
 Ivanna
 :::
 
-![](../images/intro1.jpg){.nostretch fig-align="center" width="700px"}
+![](images/intro1.jpg){.nostretch fig-align="center" width="700px"}
 
 ## RNA-Seq Pipeline
 
@@ -32,7 +32,7 @@ Ivanna
 Ivanna
 :::
 
-![](../images/intro2.jpg){.nostretch fig-align="center" width="100%"}
+![](images/intro2.jpg){.nostretch fig-align="center" width="100%"}
 
 ## Wirkungsweise
 
@@ -124,6 +124,14 @@ Constanze
 :::
 
 ::: panel-tabset
+### Roh-Counts
+
+```{r}
+#| fig-align: center
+plot_counts_raw
+```
+
+
 ### Nur transformiert
 
 ```{r}
@@ -185,7 +193,7 @@ plot_pca_3d
 -   PC3 erklärt nur knapp 7% der Gesamtvarianz
 -   Keine bessere Separabilität
 
-### t-SNA
+### t-SNE
 
 **t-distributed Stochastic Neighbor Embedding**
 

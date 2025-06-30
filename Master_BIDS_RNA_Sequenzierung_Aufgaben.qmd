@@ -1,6 +1,8 @@
 ---
 title: "RNA-Sequenzierungs-Analyse - Aufgaben"
-author: "Patrick Metzger - Institut für Medizinische Bioinformatik und Systemmedizin"
+author: 
+  - "Patrick Metzger - Institut für Medizinische Bioinformatik und Systemmedizin"
+  - "Christoph Kovacs <christoph.kovacs@master-bids.de>"
 format:
   html:
     toc: true
@@ -14,6 +16,16 @@ execute:
   warning: false
   error: false
 ---
+
+## Code Repository
+
+<a href="https://github.com/stx-chris/bids-project" data-preview-link>Github Christoph Kovacs</a>
+
+
+# Disclaimer
+
+Die Datenverarbeitung, -analyse und Interpretation erfolgte teilweise in Zusammenarbeit mit Constanze Leichtweiß, Ivanna Marchesini und Enrico Wondra (Gruppe 3).
+
 
 # Einführung
 
@@ -292,6 +304,8 @@ sum(dim(count_matrix)[1]-sum(keep)) # discarding 39,575 records
 dds <- dds[keep,] 
 ```
 
+Es verbleiben 18.198 Gene für die weitere Analyse. Als Filterkriterium wurden nur diejenigen Gene behalten, bei denen in mindestens 2 Samples mindestens 10 Reads vorhanden sind. Dabei wurden 39.575 Records herausgefiltert.
+
 ### Normalisierung und Differentielle Expression
 
 Nachdem wir die schwach exprimierten Gene entfernt haben können wir die Normalisierung der Daten vornehmen. Dazu müssen wir die *"size factors"* und die *"Dispersion"* bestimmen, damit wir den tatsächlichen Signifikanztest (wir wollen den Wald- Test verwenden) anwenden können. Außerdem müssen wir die normalisierten Expressionswerte extrahieren, damit wir damit z.B. eine PCA erstellen können. Dazu verwenden wir die [*regularized logarithm* (rlog) Transformation](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#regularized-log-transformation). Die Werte können dann mit der Funktion `assay()` extrahiert werden.
@@ -315,6 +329,15 @@ rlog_matrix <- assay(rld)
 head(rlog_matrix)
 ```
 
+Modellanpassung ist gelungen, da:
+- die rote Linie gut durch die Punktwolke läuft,
+- keine massiven systematischen Abweichungen sichtbar sind.
+- Ausreißer-Dispersionswerte (blaue Kreise) ausreichend angepasst sind (um stabilere Tests zu ermöglichen)
+
+Nach Anwendung von Shrinkage (blaue Punkte) wurden viele extreme log₂ Fold Changes bei niedrig exprimierten Genen korrigiert.
+- Die geschrumpften Effekte sind robuster und besser interpretierbar.
+- Gene mit hohen Counts und stabil hohen oder niedrigen log₂ Fold Changes bleiben auch nach Shrinkage deutlich sichtbar.
+
 ### QC Plot vor und nach der Normalisierung
 
 Zur besseren Interpretation und dem Verständnis der Normalisierung bietet es sich an die Count-Werte der einzelnen Gene als kombinierten Boxplot für die jeweiligen Bedingungen darzustellen; jeweils vor und nach der Normalisierung. Die Konvertierung der Count-Werte in `log2(count + 1)` hat sich in dieser Hinsicht bewährt.
@@ -326,6 +349,23 @@ Hinweis: Normalisierte Counts erhaltet ihr nach anwenden der `DESeq()` Funktion 
 ```{r}
 ## Roh-Counts extrahieren
 raw_counts <- counts(dds)
+
+# Daten für ggplot umformen
+df_raw <- as.data.frame(raw_counts) %>%
+  rownames_to_column("gene") %>%
+  pivot_longer(-gene, names_to = "sample", values_to = "log2count") %>%
+left_join(as.data.frame(colData(dds)) %>%
+rownames_to_column("sample"), by = "sample")
+
+# Boxplot erstellen
+plot_counts_raw <- df_raw %>%
+  ggplot(aes(x = sample, y = log2count, fill = group)) +   # why not group?
+  geom_boxplot(outlier.size = 0.3) +
+  theme_bw() +
+  labs(title = "Roh-Counts pro Bedingung",
+       x = "Bedingung", y = "Counts (trans)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_counts_raw
 
 # Log2 transformieren
 log_raw <- log2(raw_counts + 1)
@@ -342,7 +382,7 @@ plot_counts_trans <- df_raw %>%
   ggplot(aes(x = sample, y = log2count, fill = group)) +   # why not group?
   geom_boxplot(outlier.size = 0.3) +
   theme_bw() +
-  labs(title = "Counts (trans) pro Bedingung",
+  labs(title = "Log2-transformierte Counts pro Bedingung",
        x = "Bedingung", y = "Counts (trans)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 plot_counts_trans
@@ -365,11 +405,18 @@ plot_counts_normtrans <- df_norm %>%
   ggplot(aes(x = sample, y = log2normCount, fill = group)) +
   geom_boxplot(outlier.size = 0.3) +
   theme_bw() +
-  labs(title = "Counts (norm, trans) pro Bedingung",
+  labs(title = "Log2-transformierte und normalisierte Counts pro Bedingung",
        x = "Bedingung", y = "Counts (norm, trans)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 plot_counts_normtrans
 ```
+
+	
+Die transformierten und normiert+transformierten Verteilungen sind nun nahezu identisch zwischen den Proben:
+- Die Mediane und die Verteilungen der Counts sind angeglichen worden.
+- Die Normalisierung war erfolgreich, d. h. systematische Unterschiede zwischen den Proben (z. B. durch Sequenziertiefe) wurden entfernt.
+- Erst jetzt sind verlässliche Vergleiche zwischen Bedingungen (DMSO, Sorafenib, Trametinib) möglich.
+
 
 ## PCA - Principal Component Analysis
 
@@ -424,12 +471,6 @@ plot_pca_2d <- ggplot(pca, aes(PC1, PC2, color = group, label = name)) +
   coord_fixed() +
   theme_minimal()
 plot_pca_2d
-# Interpretation
-# ==============
-# PCA erklärt 87% der Gesamtvarianz in 2 Dimensionen
-# DMSO bildet einen Cluster, die Samples kann als (linear) homogen angenommen werden
-# Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
-# Trametinib bildet zwei Cluster, die Samples sind daher nicht (linear) homogen
 
 ## 3D
 library(plotly)
@@ -483,11 +524,6 @@ plot_mds <- ggplot(mds_df, aes(x = V1, y = V2, color = group)) +
   labs(x = "MDS1", y = "MDS2") +
   theme_minimal()
 plot_mds
-# Interpretation
-# ==============
-# MDS zeigt ähnliches Bild wie PCA
-# Sorafenib bildet einen Cluster, die Samples können daher als (linear) homogen angenommen werden
-# DMSO und Trametinib bilden jeweils zwei Cluster, die Samples scheinen daher nicht-lineare Beziehungen zu haben, die von der MDS nicht erfasst werden
 ```
 
 **t-SNA**
@@ -523,13 +559,9 @@ plot_tsna <- ggplot(tsne_df, aes(x = TSNE1, y = TSNE2, color = group)) +
   labs(title = "t-SNE of RNA-seq samples", x = "t-SNE 1", y = "t-SNE 2") +
   theme_minimal()
 plot_tsna
-# Interpretation
-# ==============
-# Ganz deutliche Cluster zu erkennen; DMSO und Tramatinib bilden jeweils einen Cluster, zusammen einen größeren. Daher kann davon ausgegangen, dass Trametinib keinen über die Baseline hinausgehenden qualitativen Unterschied aufweist.
-# Sorafenib bildet einen Cluster deutlich abseits der Kontrollgruppe und von Trametinib, das kann als Indikator für einen qualitativen Unterschied gewertet werden
 ```
 
-*** UMAP ***
+**UMAP**
 ```{r}
 if (!require("umap", quietly = TRUE))
   install.packages("umap")
@@ -560,6 +592,38 @@ plot_umap <- ggplot(umap_df, aes(x = V1, y = V2, color = group, label = sample))
   theme_minimal()
 plot_umap
 ```
+
+**Scree Plot**
+
+Der gezeigte kumulative Scree-Plot stellt dar, wie viel Varianz durch die sukzessive Hinzunahme von Hauptkomponenten (Principal Components, PCs) in einer PCA erklärt wird. Man erkennt, dass die ersten 3 Hauptkomponenten ausreichen, um den Großteil der Varianz (>90 %) der Daten zu erfassen. Der Zugewinn von 2 auf 3 Komponenten ist jedoch gering, daher werden 2 und 3 Dimensionen betrachtet. 
+
+**PCA**
+
+Im 2-dimensionalen PCA-Fall kann man bereits eine klare Separarierung der drei Treatments in der ersten Hauptkomponente (PC1) erkennen. Zusätzlich sind DMSO und Soratenib jeweils schön zusammen gruppiert. Einzig bei Trametinib ist kein deutlicher Cluster erkennbar, was auf eine höhere In-Sample Varianz hindeuten könnte.
+
+Die 3-Komponenten-PCA bringt keine neuen Erkenntnisse
+
+**MDS**
+
+Die MDS (Multi-dimensional Scaling) bestätigt die bisherigen Beobachtungen.
+
+**t-SNE und UMAP**
+
+Da PCA und MDS nur lineare Abhängigkeiten berücksichtigen, werden noch zwei nicht-lineare Techniken verwendet:
+1. t-SNE: t-distributed stochastic neighbor embedding for non-linear relationship analysis; bildet lokale Zusammenhänge gut ab
+2. UMAP: Uniform Manifold Approximation and Projection, bildet lokale und globale Zusammenhänge gut ab
+
+Mit beiden Techniken lassen sich Zusammenhängen auf generellen Mannigfaltigkeiten analysieren, dh. auch nicht-lineare. 
+
+Die t-SNE zeigt deutliche Cluster für alle drei Treatments und scheint, die In-Sample-Varianz von Trametinib gut zu berücksichtigen. Auch ist Trametinib näher bei DMSO angesiedelt und Sorafenib weiter weg, was auf einen deutlicheren Unterschied von Sorafenib im Vegleich mit den anderen beiden Treatments hindeutet.
+
+In der UMAP liegen die Cluster deutlich weiter auseinander, jedoch ist auch hier eine deutliche Trennung in der Abstufung DMSO > Trametinib > Sorafenib erkennbar.
+
+**Fazit**
+
+Die Dimensionsreduktionsanalyse hat ergeben, dass die einzelnen Samples von DMSO, Trametnib und Sorafenib homogene Cluster bilden und daher für die weitere Analyse gut geeignet sind.
+
+
 
 ## Differentielle Expressions Analyse
 
@@ -636,6 +700,8 @@ plot_deg
  
 ```
 
+Man erkennt, dass Sorafenib mit rund 2000 hoch- und 500 runterregulierten Genen deutlich mehr Wirkung erzielt als Trametinib mit rund 1500 hoch- und 200 runterregulierten Genen
+
 ### Identifizierte DEGs als Tabellen
 ```{r}
 
@@ -645,27 +711,6 @@ tab_deg_tram <- kable(head(deg_tram, 10), caption = "Top DEGs: Trametinib vs DMS
 tab_deg_tram
 ```
 
-
-#### Sorafenib vs. DMSO
-
-```{r}
-#| eval: false
-#| tbl-subcap:
-#|   - "Up-Regulated"
-#|   - "Down-Regulated"
-#| layout-ncol: 2
-#| tbl-cap: "DEGs Sorafenib vs. DMSO"
-
-#kable(df[, c("Symbol", "log2FoldChange", "padj")], row.names = FALSE, "html", #col.names = c("Symbol", "log2FC", "adj. p-value"))  %>%
-#  kable_styling() %>%
-#  scroll_box(width = "100%", height = "800px")
-```
-
-#### Trametinib vs. DMSO
-
-```{r}
-
-```
 
 ### Visuelle Darstellung: Volcano Plot
 
@@ -699,12 +744,14 @@ plot_volcano_sora <- EnhancedVolcano(res_sora,
     legendPosition = 'right')
 plot_volcano_sora
 ```
-Interpretation: Wirkmechanismus (molekular):
-	•	Hemmung von Proliferation: über Runterregulation von MYC, FOSL1, CDK-Stimulation
-	•	Förderung von Apoptose: durch Hochregulation von BMF
-	•	Zellzyklus-Stillstand: über CDKN1B (p27)
-	•	Hemmung von Invasion/Metastasierung: über TNS4-Downregulation
-	•	mögliche metabolische Umstellung: über PCK1
+**Interpretation**
+
+Wirkmechanismus (molekular):
+- Hemmung von Proliferation: über Runterregulation von MYC, FOSL1, CDK-Stimulation
+- Förderung von Apoptose: durch Hochregulation von BMF
+- Zellzyklus-Stillstand: über CDKN1B (p27)
+- Hemmung von Invasion/Metastasierung: über TNS4-Downregulation
+- mögliche metabolische Umstellung: über PCK1
 
 
 #### Volcano Plot: Trametinib vs DMSO
@@ -726,7 +773,8 @@ plot_volcano_tram <- EnhancedVolcano(res_tram,
   coord_cartesian(xlim = c(-3, 3))
 plot_volcano_tram
 ```
-Interpretation:
+**Interpretation**
+
 Trametinib dämpft gezielt MAPK-abhängige Onkogenexpression (FOSL1), blockiert Stress-Überlebenssignale (IER3) und hemmt Invasionsmechanismen (TNS4). Das entspricht exakt seiner pharmakologischen Wirkung als MEK-Inhibitor.
 
 
@@ -791,7 +839,20 @@ up_list <- list(
   Sorafenib = up_sora,
   Trametinib = up_tram
 )
+
+# Hochregulierte Gene
+plot_upset_up <- upset(fromList(up_list), 
+      sets = c("Trametinib", "Sorafenib"),
+      keep.order = TRUE,
+      order.by = "freq",
+      mainbar.y.label = "Gemeinsame hochregulierte Gene",
+      sets.x.label = "Gene pro Medikament",
+      text.scale = c(1.5, 2, 2, 1.3, 2, 2)
+    )
+plot_upset_up
 ```
+
+Obschon Sorafenib und Trametinib eine hohe Anzahl gemeinsam hochregulierter Gene aufweisen (219), ist die isolierte Wirkung von Sorafenib mit 1213 Genen deutlich höher als von Trametinib alleine (12).
 
 #### Durch beide Medikamente runter-regulierte Gene
 
@@ -803,20 +864,6 @@ down_list <- list(
   Sorafenib = down_sora,
   Trametinib = down_tram
 )
-```
-
-```{r}
-## Plots
-# Hochregulierte Gene
-plot_upset_up <- upset(fromList(up_list), 
-      sets = c("Trametinib", "Sorafenib"),
-      keep.order = TRUE,
-      order.by = "freq",
-      mainbar.y.label = "Gemeinsame hochregulierte Gene",
-      sets.x.label = "Gene pro Medikament",
-      text.scale = c(1.5, 2, 2, 1.3, 2, 2)
-    )
-plot_upset_up
 
 # Runterregulierte Gene
 plot_upset_down <- upset(fromList(down_list), 
@@ -847,6 +894,9 @@ up_sets[["Sorafenib-Trametinib"]]
 down_sets[["Sorafenib-Trametinib"]]
 ```
 
+Bei der Runterregulierung zeigt sich ein ähnliches Bild wie zuvor. Mit 486 gemeinsam runterregulierten Genen teilen Sorafenib und Trametinib einen guten Teil ihrer Wirkung. Doch Sorafenib ist mit 1437 isoliert runterregulierten Genen deutlich wirkungsstärker als Trametinib mit nur 29 isoliert runterregulierten Genen
+
+**MSigDB**
 
 Jetzt kennen wir die Gene, die entweder durch beiden Medikamente oder auch nur in dem einen oder dem anderen verändert sind. Aber was machen wir jetzt damit? Wir können uns z.B. der Ressource *"Molecular Signatures Database"* (MSigDB) bedienen.
 
@@ -1101,6 +1151,27 @@ gsea_dotplot_down <- ggplot(gsea_down_plot, aes(x = Ratio, y = Term)) +
 gsea_dotplot_down
 ```
 
+**Interpretation**
+
+**Transkriptionelle Veränderungen durch Sorafenib**
+
+- ⇓ Zellzyklus und Proliferation (MYC, E2F, G2M, KRAS, mTORC1)
+- ⇓ Zellüberleben und Entzündungsreaktion (NF-κB-, IL2/STAT5-, TNFα-Signale)
+- ⇑ Apoptose und Tumorsuppression (p53)
+- ⇑ Metabolische Stressantworten: Adipogenese, Peroxisomen
+- ⇑ Xenobiotik-Metabolismus
+- ⇑ Interferon-Antwort (Hinweis auf Immunaktivierung oder zellulären Stress)
+
+**Transkriptionelle Veränderungen durch Trametinib**
+
+- ⇓ MAPK-getriebene Proliferation (KRAS, MYC, E2F, TNFα/NF-κB, IL6/STAT3)
+- ⇓ Entzündungswege (akute Suppression von IL6/NF-κB)
+- ⇑ P53-abhängige Stressantwort Zellzyklusarrest, p21, DNA-Reparatur aktiviert
+- ⇑ Metabolische Stressantwort (Adipogenese)
+- ⇑ Notch- und STAT3-Aktivierung ⇒ Hinweis auf Resistenzentwicklung, Aktivierung kompensatorischer Signalwege
+
+
+
 #### Gene Ontology Analysis
 
 ```{r GO}
@@ -1161,7 +1232,7 @@ sora_down_go_results@result <- sora_down_go_results@result[order(-sora_down_go_r
 tram_down_go_results@result <- tram_down_go_results@result[order(-tram_down_go_results@result$Count), ]
 ```
 
-Barplots der GO Ergebnisse für Sorafenib Up-Regulierte Gene:
+**Barplots der GO Ergebnisse für Sorafenib Up-Regulierte Gene:**
 
 ```{r GO Plot Sora Up, fig.width=12, fig.height=10}
 plot_go_sora_up <- barplot(
@@ -1179,7 +1250,14 @@ plot_go_sora_up <- barplot(
 plot_go_sora_up
 ```
 
-Barplots der GO Ergebnisse für Sorafenib Down-Regulierte Gene:
+**Interpretation**
+
+- Stoffwechselprozesse: Lipidabbau, Phospholipid- und Fettsäuremetabolismus
+- Oxidativer Stress und Fremdstoffe (Xenobiotika).
+- Autophagie, Insulinantwort und Proteinabbau.
+- Metabolische Reprogrammierung und aktiviert zelluläre Schutzmechanismen
+
+**Barplots der GO Ergebnisse für Sorafenib Down-Regulierte Gene:**
 
 ```{r GO Plot Sora Down, fig.width=12, fig.height=10}
 plot_go_sora_down <- barplot(
@@ -1197,7 +1275,13 @@ plot_go_sora_down <- barplot(
 plot_go_sora_down
 ```
 
-Barplots der GO Ergebnisse für Trametinib Up-Regulierte Gene:
+**Interpretation**
+
+- Gezielte Hemmung von Genen der Proteinbiosynthese
+- Weitere Prozesse: Nuklearer Transport, mRNA-Splicing, Kinaseaktivität, Apoptose-Regulation
+- Sorafenib hemmt zentrale Zellfunktionen (Translation, Signalweiterleitung, Zellwachstum), unterstützt seine antitumorale Wirkung
+
+**Barplots der GO Ergebnisse für Trametinib Up-Regulierte Gene:**
 
 ```{r Go Plot Tram Up, fig.width=12, fig.height=10}
 plot_go_tram_up <- barplot(
@@ -1214,8 +1298,14 @@ plot_go_tram_up <- barplot(
   )
 plot_go_tram_up
 ```
+**Interpretation**
 
-Barplots der GO Ergebnisse für Trametinib Down-Regulierte Gene:
+- Signifikante Anreicherung in Prozessen der Organ- und Systementwicklung
+- Beeinflusst auch intrazelluläre Rezeptorsignalwege, Vitaminantwort, Differenzierung vaskulärer glatter Muskelzellen
+- Trametinib beeinflusst zentrale Entwicklungs- und Regulationsmechanismen in Geweben
+
+
+**Barplots der GO Ergebnisse für Trametinib Down-Regulierte Gene:**
 
 ```{r Go Plot Tram Down, fig.width=12, fig.height=10}
 plot_go_tram_down <- barplot(
@@ -1233,12 +1323,30 @@ plot_go_tram_down <- barplot(
 plot_go_tram_down
 ```
 
+
+**Interpretation**
+
+- Beeinflussung von Phosphorylierung und Kinaseaktivität
+- Verminderte Epithelzell-Proliferation, Apoptose-Regulation, Proteintransport in den Zellkern
+- Trametinib hemmt zentrale zelluläre & entwicklungsbezogene Prozesse und trägt zur Tumorwachstumshemmung bei
+
+
+## Referenzen
+
+-   Qi GX, Zhao RX, Gao C, Ma ZY, Wang S, Xu J. Recent advances and challenges in colorectal cancer: From molecular research to treatment. World J Gastroenterol. 2025 Jun 7;31(21):106964. doi: 10.3748/wjg.v31.i21.106964. PMID: 40538516; PMCID: PMC12175868.
+-   Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.
+-   Li J, Varghese RS, Ressom HW. RNA-Seq Data Analysis. Methods Mol Biol. 2024;2822:263-290. doi: 10.1007/978-1-0716-3918-4_18. PMID: 38907924; PMCID: PMC12125953.
+-   Koch CM, Chiu SF, Akbarpour M, Bharat A, Ridge KM, Bartom ET, Winter DR. A Beginner's Guide to Analysis of RNA Sequencing Data. Am J Respir Cell Mol Biol. 2018 Aug;59(2):145-157. doi: 10.1165/rcmb.2017-0430TR. PMID: 29624415; PMCID: PMC6096346.
+-   Wall P, Ideker T. Representing mutations for predicting cancer drug response. Bioinformatics. 2024 Jun 28;40(Suppl 1):i160-i168. doi: 10.1093/bioinformatics/btae209. PMID: 38940147; PMCID: PMC11256944.
+-   Ciaran Evans, Johanna Hardin, Daniel M Stoebel, Selecting between-sample RNA-Seq normalization methods from the perspective of their assumptions, Briefings in Bioinformatics, Volume 19, Issue 5, September 2018, Pages 776–792, https://doi.org/10.1093/bib/bbx008
+
 # Anhang
 
 ```{r}
 #| cache: false
 
 save(
+  plot_counts_raw,
   plot_counts_trans,
   plot_counts_normtrans,
   plot_scree,
